@@ -37,20 +37,9 @@ SDL_Texture* fond = charger_image("../fond.bmp", ecran);
 //*****SPRITE JOUEUR
 SDL_Rect DestR_JoueurSprite[1];
 SDL_Rect SrcR_JoueurSprite[1];
-
-DestR_JoueurSprite[0].x = 50;
-DestR_JoueurSprite[0].y = 300;
-DestR_JoueurSprite[0].w = 285/3; // Largeur du sprite
-DestR_JoueurSprite[0].h = 250/2; // Hauteur du sprite
-
-SrcR_JoueurSprite[0].y = 0;
-SrcR_JoueurSprite[0].x = 0; //%3 car il y a 3 sprites par ligne, quand on change de y, i%3=0 pour les 3 suivants
-SrcR_JoueurSprite[0].w = 285/3;
-SrcR_JoueurSprite[0].h = 250/2;
-
+InitSpriteJoueur(&DestR_JoueurSprite[0], &SrcR_JoueurSprite[0]);
 SDL_Texture* Joueursprite = charger_image_transparente("../sprites.bmp", ecran, 0, 255, 255);
-
-int compteSprite = 0; //Compteur pour réduire fréquence du mouvement du sprite du joueur
+int compteSpriteJoueur = 0; //Compteur pour réduire fréquence du mouvement du sprite du joueur*DestR_JoueurSprite, *SrcR_JoueurSprite
 
 
 
@@ -62,15 +51,9 @@ while(!terminer){
 
 
     SDL_RenderCopy(ecran, Joueursprite, &SrcR_JoueurSprite[0], &DestR_JoueurSprite[0]);
-    if (compteSprite == 500){ //Nb arbitraite pour définir la vitesse de changement des sprites
-        if (SrcR_JoueurSprite[0].x >= 285-(285/3)){ //Si on est au dernier sprite à droite, alors on retourne à celui tout à gauche
-            SrcR_JoueurSprite[0].x = 0;
-        }
-        SrcR_JoueurSprite[0].x += 285/3; //On passe au sprite suivant
-        compteSprite = 0; //Si on est à l'étape du changement, on réinstancie le compteur à 0
-    } else{
-        compteSprite += 1; 
-    }
+
+    //Animation du sprite Joueur
+    compteSpriteJoueur = animationJoueur(compteSpriteJoueur, &DestR_JoueurSprite[0], &SrcR_JoueurSprite[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
     
 
     SDL_PollEvent( &evenements );

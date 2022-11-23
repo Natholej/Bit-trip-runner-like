@@ -1,8 +1,4 @@
-#include <SDL2/SDL.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <SDL2/SDL_ttf.h>
+#include "SDL_donnees.h"
 
 SDL_Window* SDL_CreateWindow(const char* title,
 int x,
