@@ -7,6 +7,9 @@ SDL_Event evenements; // Événements liés à la fenêtre
 
 bool terminer = false;
 
+int compteur = 0;
+
+
 if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
     printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
     SDL_Quit();
@@ -35,13 +38,9 @@ SDL_Texture* fond = charger_image("../fond.bmp", ecran);
 
 
 //*****SPRITE JOUEUR
-SDL_Rect DestR_JoueurSprite[1];
-SDL_Rect SrcR_JoueurSprite[1];
-InitSpriteJoueur(&DestR_JoueurSprite[0], &SrcR_JoueurSprite[0]);
-SDL_Texture* Joueursprite = charger_image_transparente("../sprites.bmp", ecran, 0, 255, 255);
-int compteSpriteJoueur = 0; //Compteur pour réduire fréquence du mouvement du sprite du joueur*DestR_JoueurSprite, *SrcR_JoueurSprite
-
-
+joueur_t joueur;
+init_joueur(&joueur);
+joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 
 
 // Boucle principale
@@ -50,22 +49,29 @@ while(!terminer){
     SDL_RenderCopy(ecran, fond, NULL, NULL); //Copie la texture et la met sur le renderer
 
 
-    SDL_RenderCopy(ecran, Joueursprite, &SrcR_JoueurSprite[0], &DestR_JoueurSprite[0]);
+    SDL_RenderCopy(ecran, joueur.JoueurSprite, &joueur.SpriteFichier[0], &joueur.SpriteGraphique[0]);
 
     //Animation du sprite Joueur
-    compteSpriteJoueur = animationJoueur(compteSpriteJoueur, &DestR_JoueurSprite[0], &SrcR_JoueurSprite[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
-    
+    joueur.compteurSprite = animationJoueur(joueur.compteurSprite, &joueur.SpriteGraphique[0], &joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
+
+
 
     SDL_PollEvent( &evenements );
     switch(evenements.type){
         case SDL_QUIT:
             terminer = true; break;
+        case SDL_KEYUP:
+            joueur.SpriteFichier[0].y = 0;
+            break;
         case SDL_KEYDOWN:
             switch(evenements.key.keysym.sym){
                 case SDLK_ESCAPE:
                 case SDLK_q:
                 terminer = true; break;
-            }
+                case SDLK_s:
+                joueur.SpriteFichier[0].y = (400/6)*2;
+                break;
+            } 
     }
 
     //Update

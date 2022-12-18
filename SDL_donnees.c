@@ -8,8 +8,8 @@
  * @param SrcR_JoueurSprite Axe x de l'image sprite pour afficher le sprite dasn les bonnes dimensions
  */
 void InitSpriteJoueur(SDL_Rect* DestR_JoueurSprite, SDL_Rect* SrcR_JoueurSprite){
-    DestR_JoueurSprite[0].x = 50;
-    DestR_JoueurSprite[0].y = 300;
+    DestR_JoueurSprite[0].x = PosXJoueur;
+    DestR_JoueurSprite[0].y = PosYJoueur;
     DestR_JoueurSprite[0].w = 200/3; // Largeur du sprite
     DestR_JoueurSprite[0].h = 400/6; // Hauteur du sprite
 
@@ -41,4 +41,9 @@ int animationJoueur(int compteSprite, SDL_Rect* DestR_JoueurSprite, SDL_Rect* Sr
         compteSprite += 1; 
     }
     return compteSprite;
+}
+
+void init_joueur(joueur_t* joueur){
+    InitSpriteJoueur(&joueur->SpriteGraphique[0], &joueur->SpriteFichier[0]);
+    joueur->compteurSprite = 0;
 }
