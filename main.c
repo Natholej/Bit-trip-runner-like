@@ -73,6 +73,9 @@ while(!terminer){
                 case SDLK_s: //Roulade, on met le sprite correspondant
                 joueur.SpriteFichier[0].y = (400/6)*2; 
                 break;
+                case SDLK_a:
+                joueur.SpriteFichier[0].y = 400 - 400/6;
+                break;
                 case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
                 joueur.jump = true;
                 joueur.animation = false;
