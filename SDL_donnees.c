@@ -43,7 +43,47 @@ int animationJoueur(int compteSprite, SDL_Rect* DestR_JoueurSprite, SDL_Rect* Sr
     return compteSprite;
 }
 
+/**
+ * @brief initialise les paramètres du joueur
+ * 
+ * @param joueur le joueur
+ */
 void init_joueur(joueur_t* joueur){
     InitSpriteJoueur(&joueur->SpriteGraphique[0], &joueur->SpriteFichier[0]);
     joueur->compteurSprite = 0;
+    joueur->sensJump = 0;
+    joueur->jump = false;
+    joueur->compteurJump = 0;
+    joueur->animation = true;
+}
+
+/**
+ * @brief S'occupe de la gestion du saut du joueur
+ * 
+ * @param jump si false, le joueur n'est pas en train de sauter, si true, déclenchement de la fonction
+ * @param joueur le joueur
+ * @param compteurJump Compteur qui permet de ralentir la vitesse du saut (trop rapide avec juste des +1 et -1)
+ * @param sens sens : 0 = vers le haut, 1 = vers le bas
+ */
+void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
+    if (jump[0]==true){
+        if (compteurJump[0] == CompteurJump){
+            if (sens[0] == 0){
+            joueur->SpriteGraphique[0].y -= 1;
+            if (joueur->SpriteGraphique[0].y <=200){
+                sens[0] = 1;
+            }
+            } else{
+                joueur->SpriteGraphique[0].y += 1;
+                if (joueur->SpriteGraphique[0].y ==300){
+                    sens[0] = 0;
+                    jump[0] = false;
+                    joueur->animation = true;
+                }
+            }
+            compteurJump[0] = 0;
+        } else{
+            compteurJump[0] +=1;
+        }
+    }
 }

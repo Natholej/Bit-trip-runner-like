@@ -42,7 +42,6 @@ joueur_t joueur;
 init_joueur(&joueur);
 joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 
-
 // Boucle principale
 while(!terminer){
     SDL_RenderClear(ecran); //Clear la cible actuelle
@@ -52,8 +51,11 @@ while(!terminer){
     SDL_RenderCopy(ecran, joueur.JoueurSprite, &joueur.SpriteFichier[0], &joueur.SpriteGraphique[0]);
 
     //Animation du sprite Joueur
-    joueur.compteurSprite = animationJoueur(joueur.compteurSprite, &joueur.SpriteGraphique[0], &joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
+    if (joueur.animation == true){
+        joueur.compteurSprite = animationJoueur(joueur.compteurSprite, &joueur.SpriteGraphique[0], &joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
+    }
 
+    JumpJoueur(&joueur.jump, &joueur, &joueur.compteurJump, &joueur.sensJump);
 
 
     SDL_PollEvent( &evenements );
@@ -61,15 +63,19 @@ while(!terminer){
         case SDL_QUIT:
             terminer = true; break;
         case SDL_KEYUP:
-            joueur.SpriteFichier[0].y = 0;
+            joueur.SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
             break;
         case SDL_KEYDOWN:
             switch(evenements.key.keysym.sym){
                 case SDLK_ESCAPE:
                 case SDLK_q:
                 terminer = true; break;
-                case SDLK_s:
-                joueur.SpriteFichier[0].y = (400/6)*2;
+                case SDLK_s: //Roulade, on met le sprite correspondant
+                joueur.SpriteFichier[0].y = (400/6)*2; 
+                break;
+                case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
+                joueur.jump = true;
+                joueur.animation = false;
                 break;
             } 
     }
