@@ -70,12 +70,12 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
         if (compteurJump[0] == CompteurJump){
             if (sens[0] == 0){
             joueur->SpriteGraphique[0].y -= 1;
-            if (joueur->SpriteGraphique[0].y <=200){
+            if (joueur->SpriteGraphique[0].y <=300){
                 sens[0] = 1;
             }
             } else{
                 joueur->SpriteGraphique[0].y += 1;
-                if (joueur->SpriteGraphique[0].y ==300){
+                if (joueur->SpriteGraphique[0].y ==400){
                     sens[0] = 0;
                     jump[0] = false;
                     joueur->animation = true;

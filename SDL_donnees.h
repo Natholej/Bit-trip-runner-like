@@ -8,8 +8,8 @@
 
 #define CompteurJump 5
 
-#define PosXJoueur 50
-#define PosYJoueur 300
+#define PosXJoueur 100
+#define PosYJoueur 400
 
 struct joueur{
     SDL_Rect SpriteGraphique[1];
