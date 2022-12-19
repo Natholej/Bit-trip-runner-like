@@ -59,29 +59,7 @@ while(!terminer){
 
 
     SDL_PollEvent( &evenements );
-    switch(evenements.type){
-        case SDL_QUIT:
-            terminer = true; break;
-        case SDL_KEYUP:
-            joueur.SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
-            break;
-        case SDL_KEYDOWN:
-            switch(evenements.key.keysym.sym){
-                case SDLK_ESCAPE:
-                case SDLK_q:
-                terminer = true; break;
-                case SDLK_s: //Roulade, on met le sprite correspondant
-                joueur.SpriteFichier[0].y = (400/6)*2; 
-                break;
-                case SDLK_a:
-                joueur.SpriteFichier[0].y = 400 - 400/6;
-                break;
-                case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
-                joueur.jump = true;
-                joueur.animation = false;
-                break;
-            } 
-    }
+    handle_events(&evenements, &terminer, &joueur);
 
     //Update
     SDL_RenderPresent(ecran);

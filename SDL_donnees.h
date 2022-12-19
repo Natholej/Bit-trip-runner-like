@@ -32,3 +32,5 @@ int animationJoueur(int compteSprite, SDL_Rect* DestR_JoueurSprite, SDL_Rect* Sr
 void init_joueur(joueur_t* joueur);
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
+
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur);

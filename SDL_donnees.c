@@ -87,3 +87,35 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
         }
     }
 }
+
+/**
+ * @brief s'occupe de la gestion du clavier
+ * 
+ * @param evenements les evenements effectués(appuie touche/souris)
+ * @param terminer jeu terminé ?
+ * @param joueur le joueur
+ */
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur){
+    switch(evenements->type){
+        case SDL_QUIT:
+            terminer[0] = true; break;
+        case SDL_KEYUP:
+            joueur->SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
+            break;
+        case SDL_KEYDOWN:
+            switch(evenements->key.keysym.sym){
+                case SDLK_ESCAPE:
+                terminer[0] = true; break;
+                case SDLK_s: //Roulade, on met le sprite correspondant
+                joueur->SpriteFichier[0].y = (400/6)*2; 
+                break;
+                case SDLK_a:
+                joueur->SpriteFichier[0].y = 400 - 400/6;
+                break;
+                case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
+                joueur->jump = true;
+                joueur->animation = false;
+                break;
+            } 
+    }
+}
