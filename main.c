@@ -35,18 +35,21 @@ ecran = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
 //FOND
 SDL_Texture* fond = charger_image("../fond.bmp", ecran);
 
-
-
 //*****SPRITE JOUEUR
 joueur_t joueur;
 init_joueur(&joueur);
 joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 
+
+//**********OBSTACLE
+obstacle_t tronc1 = TrouverObstacle("tronc1");
+tronc1.TextureObstacle = charger_image("../Tronc1.bmp", ecran);
+
 // Boucle principale
 while(!terminer){
     SDL_RenderClear(ecran); //Clear la cible actuelle
     SDL_RenderCopy(ecran, fond, NULL, NULL); //Copie la texture et la met sur le renderer
-
+    SDL_RenderCopy(ecran, tronc1.TextureObstacle, NULL, &tronc1.SpriteGraphique[0]);
 
     SDL_RenderCopy(ecran, joueur.JoueurSprite, &joueur.SpriteFichier[0], &joueur.SpriteGraphique[0]);
 
@@ -54,8 +57,9 @@ while(!terminer){
     if (joueur.animation == true){
         joueur.compteurSprite = animationJoueur(joueur.compteurSprite, &joueur.SpriteGraphique[0], &joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
     }
-
     JumpJoueur(&joueur.jump, &joueur, &joueur.compteurJump, &joueur.sensJump);
+
+    deplacementObstacle(&tronc1);
 
 
     SDL_PollEvent( &evenements );

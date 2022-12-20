@@ -12,13 +12,12 @@ void InitSpriteJoueur(SDL_Rect* DestR_JoueurSprite, SDL_Rect* SrcR_JoueurSprite)
     DestR_JoueurSprite[0].y = PosYJoueur;
     DestR_JoueurSprite[0].w = 200/3; // Largeur du sprite
     DestR_JoueurSprite[0].h = 400/6; // Hauteur du sprite
-
+    
     SrcR_JoueurSprite[0].y = 0;
     SrcR_JoueurSprite[0].x = 0; //%3 car il y a 3 sprites par ligne, quand on change de y, i%3=0 pour les 3 suivants
     SrcR_JoueurSprite[0].w = 200/3;
     SrcR_JoueurSprite[0].h = 400/6;
 }
-
 
 
 /**
@@ -56,6 +55,17 @@ void init_joueur(joueur_t* joueur){
     joueur->compteurJump = 0;
     joueur->animation = true;
 }
+
+void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v){
+    obstacle->SpriteGraphique[0].x = x;
+    obstacle->SpriteGraphique[0].y = y;
+    obstacle->SpriteGraphique[0].w = w;
+    obstacle->SpriteGraphique[0].h = h;
+    obstacle->compteurVitesse = 0;
+    obstacle->choc = false;
+}
+
+
 
 /**
  * @brief S'occupe de la gestion du saut du joueur
@@ -118,4 +128,35 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur){
                 break;
             } 
     }
+}
+
+/**
+ * @brief déplace l'obstacle
+ * 
+ * @param obstacle 
+ */
+
+void deplacementObstacle(obstacle_t* obstacle){
+    if (obstacle->compteurVitesse == CompteurObstacle){
+        obstacle->SpriteGraphique[0].x -= 1;
+        obstacle->compteurVitesse = 0;
+    } else{
+        obstacle->compteurVitesse += 1;
+    }
+}
+
+
+/**
+ * @brief cherche l'obstacle correspondant à partir du nom, et l'initialise
+ * 
+ * @param nomObstacle nom de l'obstacle
+ * @param ecran  le renderer
+ * @return l'obstacle initialisé
+ */
+obstacle_t TrouverObstacle(char nomObstacle[]){
+    obstacle_t obstacle;
+    if (strcmp(nomObstacle, "tronc1")==0){
+        initObstacle(&obstacle, 1200, HauteurEcran-HauteurSol-40, 30, 40, 5);
+    }
+    return obstacle;
 }
