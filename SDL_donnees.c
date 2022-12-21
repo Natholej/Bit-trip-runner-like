@@ -153,10 +153,16 @@ void deplacementObstacle(obstacle_t* obstacle){
  * @param ecran  le renderer
  * @return l'obstacle initialisé
  */
-obstacle_t TrouverObstacle(char nomObstacle[]){
+obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     obstacle_t obstacle;
     if (strcmp(nomObstacle, "tronc1")==0){
-        initObstacle(&obstacle, 1200, HauteurEcran-HauteurSol-40, 30, 40, 5);
+        printf("tronc1\n");
+        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5);
+    } else{
+        if (strcmp(nomObstacle, "tronc2")==0){
+            printf("tronc2\n");
+            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-50, 70, 50, 5);
+        }
     }
     return obstacle;
 }

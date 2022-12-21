@@ -56,4 +56,4 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur);
 
 void deplacementObstacle(obstacle_t* obstacle);
 
-obstacle_t TrouverObstacle(char nomObstacle[]);
+obstacle_t TrouverObstacle(char nomObstacle[], int posX);
