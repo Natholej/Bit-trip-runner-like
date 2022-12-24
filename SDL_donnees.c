@@ -56,13 +56,14 @@ void init_joueur(joueur_t* joueur){
     joueur->animation = true;
 }
 
-void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v){
+void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool marchersur){
     obstacle->SpriteGraphique[0].x = x;
     obstacle->SpriteGraphique[0].y = y;
     obstacle->SpriteGraphique[0].w = w;
     obstacle->SpriteGraphique[0].h = h;
     obstacle->compteurVitesse = 0;
     obstacle->choc = false;
+    obstacle->peutMarcherSur = marchersur;
 }
 
 
@@ -157,12 +158,23 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     obstacle_t obstacle;
     if (strcmp(nomObstacle, "tronc1")==0){
         printf("tronc1\n");
-        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5);
+        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5, false);
     } else{
         if (strcmp(nomObstacle, "tronc2")==0){
             printf("tronc2\n");
-            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-50, 70, 50, 5);
+            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-30, 60, 30, 5, false);
         }
     }
     return obstacle;
+}
+
+
+bool sprites_collide(SDL_Rect sp2[1], SDL_Rect sp1[1]){
+    double r1=sqrt(sp1[0].h*sp1[0].h + sp1[0].w*sp1[0].w)/2; //définit le rayon du cercle du sprite, partant de son centre
+    double r2=sqrt(sp2[0].h*sp2[0].h + sp2[0].w*sp2[0].w)/2;
+    double v=sqrt((sp2[0].x-sp1[0].x)*(sp2[0].x-sp1[0].x) + (sp2[0].y-sp1[0].y)*(sp2[0].y-sp1[0].y)); //calcule le vecteur entre les deux sprites
+    if (v<r1+r2){ //si les deux rayons sont plus grands que le vecteur, alors ils se touchent
+        return true;
+    }
+    return false;
 }

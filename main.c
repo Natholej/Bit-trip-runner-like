@@ -2,12 +2,10 @@
 
 int main(int argc, char *argv[])
 {
-SDL_Window* fenetre; // Déclaration de la fenêtre
-SDL_Event evenements; // Événements liés à la fenêtre
 
-bool terminer = false;
+monde_t monde;
 
-int compteur = 0;
+monde.fin = false;
 
 
 if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
@@ -18,9 +16,9 @@ if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
 
 
 // Créer la fenêtre
-fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,
+monde.fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,
 SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_RESIZABLE);
-if(fenetre == NULL){ // En cas d’erreur
+if(monde.fenetre == NULL){ // En cas d’erreur
     printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
     SDL_Quit();
     return EXIT_FAILURE;
@@ -28,57 +26,57 @@ if(fenetre == NULL){ // En cas d’erreur
 
 
 // Mettre en place un contexte de rendu de l’écran
-SDL_Renderer* ecran;
-ecran = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
+monde.ecran = SDL_CreateRenderer(monde.fenetre, -1, SDL_RENDERER_ACCELERATED);
 
 //****Chargement image
 //FOND
-SDL_Texture* fond = charger_image("../fond.bmp", ecran);
+monde.fond = charger_image("../fond.bmp", monde.ecran);
 
 //*****SPRITE JOUEUR
-joueur_t joueur;
-init_joueur(&joueur);
-joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
+init_joueur(&monde.joueur);
+monde.joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", monde.ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 
 
 //**********OBSTACLE
 
-int niveau = 1; //niveau du jeu
-int nbObstacle; //nombre d'obstacle, on le définit dans la fonction chargerniveau pour s'en servir dans la boucle while qui suit
-obstacle_t* tabObstacle = chargerniveau(niveau, ecran, &nbObstacle);
+monde.niveau.numero = 1;
+monde.niveau.tabObstacle = chargerniveau(monde.niveau.numero, monde.ecran, &monde.niveau.nbObstacle);
 
 
 // Boucle principale
-while(!terminer){
-    SDL_RenderClear(ecran); //Clear la cible actuelle
-    SDL_RenderCopy(ecran, fond, NULL, NULL); //Copie la texture et la met sur le renderer
+while(!monde.fin){
+    SDL_RenderClear(monde.ecran); //Clear la cible actuelle
+    SDL_RenderCopy(monde.ecran, monde.fond, NULL, NULL); //Copie la texture et la met sur le renderer
 
 
     //Affichage graphique des obstacles du niveau
-    for (int j=0; j<nbObstacle; j++){
-        SDL_RenderCopy(ecran, tabObstacle[j].TextureObstacle, NULL, &tabObstacle[j].SpriteGraphique[0]);
-        deplacementObstacle(&tabObstacle[j]);
+    for (int j=0; j<monde.niveau.nbObstacle; j++){
+        SDL_RenderCopy(monde.ecran, monde.niveau.tabObstacle[j].TextureObstacle, NULL, &monde.niveau.tabObstacle[j].SpriteGraphique[0]);
+        deplacementObstacle(&monde.niveau.tabObstacle[j]);
+        if (sprites_collide(monde.joueur.SpriteGraphique, monde.niveau.tabObstacle[j].SpriteGraphique)){
+            printf("touché\n");
+        }
     }
 
 
-    SDL_RenderCopy(ecran, joueur.JoueurSprite, &joueur.SpriteFichier[0], &joueur.SpriteGraphique[0]);
+    SDL_RenderCopy(monde.ecran, monde.joueur.JoueurSprite, &monde.joueur.SpriteFichier[0], &monde.joueur.SpriteGraphique[0]);
 
     //Animation du sprite Joueur
-    if (joueur.animation == true){
-        joueur.compteurSprite = animationJoueur(joueur.compteurSprite, &joueur.SpriteGraphique[0], &joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
+    if (monde.joueur.animation == true){
+        monde.joueur.compteurSprite = animationJoueur(monde.joueur.compteurSprite, &monde.joueur.SpriteGraphique[0], &monde.joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
     }
-    JumpJoueur(&joueur.jump, &joueur, &joueur.compteurJump, &joueur.sensJump);
+    JumpJoueur(&monde.joueur.jump, &monde.joueur, &monde.joueur.compteurJump, &monde.joueur.sensJump);
 
 
-    SDL_PollEvent( &evenements );
-    handle_events(&evenements, &terminer, &joueur);
+    SDL_PollEvent( &monde.evenements );
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur);
 
     //Update
-    SDL_RenderPresent(ecran);
+    SDL_RenderPresent(monde.ecran);
 }
 // Quitter SDL
 SDL_Quit();
-SDL_DestroyTexture(fond);
-SDL_DestroyWindow(fenetre);
+SDL_DestroyTexture(monde.fond);
+SDL_DestroyWindow(monde.fenetre);
 return 0;
 }

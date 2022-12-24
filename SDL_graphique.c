@@ -43,9 +43,9 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
 obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
     obstacle_t* tabObstacle;
     if (niveau==1){
-        tabObstacle = malloc(sizeof(obstacle_t)*5);
-        char* tabString[5]; 
         nbObstacle[0] = 5; //On le définit pour le récupérer en dehors de la fonction
+        tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
+        char* tabString[nbObstacle[0]]; 
         tabString[0] = "tronc1";
         tabString[1] = "tronc2";
         tabString[2] = "tronc1";
