@@ -106,7 +106,7 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param terminer jeu terminé ?
  * @param joueur le joueur
  */
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur){
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause){
     switch(evenements->type){
         case SDL_QUIT:
             terminer[0] = true; break;
@@ -114,20 +114,35 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur){
             joueur->SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
             break;
         case SDL_KEYDOWN:
-            switch(evenements->key.keysym.sym){
-                case SDLK_ESCAPE:
-                terminer[0] = true; break;
-                case SDLK_s: //Roulade, on met le sprite correspondant
-                joueur->SpriteFichier[0].y = (400/6)*2; 
-                break;
-                case SDLK_a:
-                joueur->SpriteFichier[0].y = 400 - 400/6;
-                break;
-                case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
-                joueur->jump = true;
-                joueur->animation = false;
-                break;
+        //Différentes touches de claviers disponibles selon si le jeu est en pause ou non
+            //SI JEU EN PAUSE
+            if (pause[0]==1){
+                switch(evenements->key.keysym.sym){
+                    case SDLK_ESCAPE:
+                        terminer[0] = true; break;
+                    case SDLK_RETURN:
+                        pause[0] = false;
+                    break;
+                }
             } 
+            //NON EN PAUSE
+            else{
+                switch(evenements->key.keysym.sym){
+                    case SDLK_ESCAPE:
+                        terminer[0] = true; break;
+                    case SDLK_s: //Roulade, on met le sprite correspondant
+                        joueur->SpriteFichier[0].y = (400/6)*2; 
+                    break;
+                    case SDLK_a:
+                        joueur->SpriteFichier[0].y = 400 - 400/6;
+                    break;
+                    case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
+                        joueur->jump = true;
+                        joueur->animation = false;
+                    break;
+                } 
+            }
+        break;
     }
 }
 

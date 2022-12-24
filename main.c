@@ -1,11 +1,26 @@
 #include "SDL_graphique.h"
 
+
+void update_data(monde_t* monde){
+    //Affichage graphique des obstacles du niveau
+    for (int j=0; j<monde->niveau.nbObstacle; j++){
+        SDL_RenderCopy(monde->ecran, monde->niveau.tabObstacle[j].TextureObstacle, NULL, &monde->niveau.tabObstacle[j].SpriteGraphique[0]);
+        deplacementObstacle(&monde->niveau.tabObstacle[j]);
+        if (sprites_collide(monde->joueur.SpriteGraphique, monde->niveau.tabObstacle[j].SpriteGraphique)){
+            monde->niveau.tabObstacle = chargerniveau(monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
+        }
+    }
+    JumpJoueur(&monde->joueur.jump, &monde->joueur, &monde->joueur.compteurJump, &monde->joueur.sensJump);
+}
+
+
 int main(int argc, char *argv[])
 {
 
 monde_t monde;
 
 monde.fin = false;
+monde.pause = true;
 
 
 if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
@@ -31,6 +46,13 @@ monde.ecran = SDL_CreateRenderer(monde.fenetre, -1, SDL_RENDERER_ACCELERATED);
 //****Chargement image
 //FOND
 monde.fond = charger_image("../fond.bmp", monde.ecran);
+//MENU (test à mettre dans une fonction)
+monde.menu = charger_image("../Menu.bmp", monde.ecran);
+SDL_Rect DestR_Menu[1];
+DestR_Menu[0].x = 320;
+DestR_Menu[0].y = 180;
+DestR_Menu[0].w = 640; // Largeur du sprite
+DestR_Menu[0].h = 500; // Hauteur du sprite
 
 //*****SPRITE JOUEUR
 init_joueur(&monde.joueur);
@@ -49,27 +71,23 @@ while(!monde.fin){
     SDL_RenderCopy(monde.ecran, monde.fond, NULL, NULL); //Copie la texture et la met sur le renderer
 
 
-    //Affichage graphique des obstacles du niveau
-    for (int j=0; j<monde.niveau.nbObstacle; j++){
-        SDL_RenderCopy(monde.ecran, monde.niveau.tabObstacle[j].TextureObstacle, NULL, &monde.niveau.tabObstacle[j].SpriteGraphique[0]);
-        deplacementObstacle(&monde.niveau.tabObstacle[j]);
-        if (sprites_collide(monde.joueur.SpriteGraphique, monde.niveau.tabObstacle[j].SpriteGraphique)){
-            printf("touché\n");
-        }
+    if (!monde.pause){
+        update_data(&monde);
+    } else{
+        monde.joueur.SpriteFichier[0].y = 400/6;
+        SDL_RenderCopy(monde.ecran, monde.menu, NULL, &DestR_Menu[0]); //Copie la texture et la met sur le renderer
     }
-
-
-    SDL_RenderCopy(monde.ecran, monde.joueur.JoueurSprite, &monde.joueur.SpriteFichier[0], &monde.joueur.SpriteGraphique[0]);
 
     //Animation du sprite Joueur
     if (monde.joueur.animation == true){
         monde.joueur.compteurSprite = animationJoueur(monde.joueur.compteurSprite, &monde.joueur.SpriteGraphique[0], &monde.joueur.SpriteFichier[0]); //Stockage de la valeur du compteur à chaque itération pour actualisation du sprite
     }
-    JumpJoueur(&monde.joueur.jump, &monde.joueur, &monde.joueur.compteurJump, &monde.joueur.sensJump);
+
+    SDL_RenderCopy(monde.ecran, monde.joueur.JoueurSprite, &monde.joueur.SpriteFichier[0], &monde.joueur.SpriteGraphique[0]);
 
 
     SDL_PollEvent( &monde.evenements );
-    handle_events(&monde.evenements, &monde.fin, &monde.joueur);
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause);
 
     //Update
     SDL_RenderPresent(monde.ecran);
