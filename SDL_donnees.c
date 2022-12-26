@@ -106,7 +106,7 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param terminer jeu terminé ?
  * @param joueur le joueur
  */
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix){
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran){
     switch(evenements->type){
         case SDL_QUIT:
             terminer[0] = true; break;
@@ -121,7 +121,23 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                     case SDLK_ESCAPE:
                         terminer[0] = true; break;
                     case SDLK_RETURN:
+                        handle_choix(choix, niveau, ecran);
                         pause[0] = false;
+                    break;
+                    case SDLK_1:
+                        choix[0] = 1;
+                    break;
+                    case SDLK_2:
+                        choix[0] = 2;
+                    break;
+                    case SDLK_3:
+                        choix[0] = 3;
+                    break;
+                    case SDLK_4:
+                        choix[0] = 4;
+                    break;
+                    case SDLK_5:
+                        choix[0] = 5;
                     break;
                 }
             } 
@@ -183,7 +199,14 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     return obstacle;
 }
 
-
+/**
+ * @brief gestion de la collision entre deux sprites (obstacle et joueur)
+ * 
+ * @param sp2 sprite
+ * @param sp1 sprite
+ * @return true si collision
+ * @return false si pas de collision
+ */
 bool sprites_collide(SDL_Rect sp2[1], SDL_Rect sp1[1]){
     double r1=sqrt(sp1[0].h*sp1[0].h + sp1[0].w*sp1[0].w)/2; //définit le rayon du cercle du sprite, partant de son centre
     double r2=sqrt(sp2[0].h*sp2[0].h + sp2[0].w*sp2[0].w)/2;
@@ -192,4 +215,39 @@ bool sprites_collide(SDL_Rect sp2[1], SDL_Rect sp1[1]){
         return true;
     }
     return false;
+}
+
+/**
+ * @brief S'occupe des changements durant que le jeu est en pause (le menu) : curseur et renderer
+ * 
+ * @param monde le monde
+ */
+void handle_pause(monde_t* monde){
+    monde->joueur.SpriteFichier[0].y = 400/6;
+    if (monde->menu.choix==1){
+        monde->menu.placecurseur[0].y = 50;
+        monde->menu.placecurseur[0].x = 600;
+    } else{
+        if (monde->menu.choix==2){
+            monde->menu.placecurseur[0].y = 200;
+            monde->menu.placecurseur[0].x = 600;
+        } else{
+            if (monde->menu.choix==3){
+                monde->menu.placecurseur[0].y = 350;
+                monde->menu.placecurseur[0].x = 600;
+            } else{
+                if (monde->menu.choix==4){
+                    monde->menu.placecurseur[0].y = 500;
+                    monde->menu.placecurseur[0].x = 600;
+                } else{
+                    if (monde->menu.choix==5){
+                        monde->menu.placecurseur[0].y = 630;
+                        monde->menu.placecurseur[0].x = 220;
+                    }
+                }
+            }
+        }
+    }
+    SDL_RenderCopy(monde->ecran, monde->menu.texturemenu, NULL, NULL); //affichage du menu
+    SDL_RenderCopy(monde->ecran, monde->menu.curseur, NULL, &monde->menu.placecurseur[0]); //curseur du menu
 }

@@ -53,18 +53,25 @@ struct niveau{
 
 typedef struct niveau niveau_t;
 
+struct menu{
+    SDL_Texture* texturemenu;
+    SDL_Texture* curseur;
+    int choix;
+    SDL_Rect placecurseur[1];
+};
+
+typedef struct menu menu_t;
+
 struct monde{
     SDL_Window* fenetre; //fenetre du jeu
     SDL_Event evenements; // Événements liés à la fenêtre
     SDL_Renderer* ecran; //rendu de l'écran
     SDL_Texture* fond; //fond du jeu
-    SDL_Texture* menu; //menu principale du jeu
-    SDL_Texture* curseur; //curseur du menu
     joueur_t joueur; //le joueur 
     niveau_t niveau; //niveau actuel
+    menu_t menu; //le menu
     bool fin;
     bool pause;
-    int choix; //choix du joueur dans le menu
 };
 
 typedef struct monde monde_t;
@@ -80,10 +87,14 @@ void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool 
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
 
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix);
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran);
 
 void deplacementObstacle(obstacle_t* obstacle);
 
 obstacle_t TrouverObstacle(char nomObstacle[], int posX);
 
 bool sprites_collide(SDL_Rect sp2[1], SDL_Rect sp1[1]);
+
+void handle_pause(monde_t* monde);
+
+void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran);

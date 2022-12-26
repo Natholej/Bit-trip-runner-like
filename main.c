@@ -1,6 +1,10 @@
 #include "SDL_graphique.h"
 
-
+/**
+ * @brief rafraichît les données utiles à l'éxécution du jeu lorsque celui-ci n'est pas en pause
+ * 
+ * @param monde le monde
+ */
 void update_data(monde_t* monde){
     //Affichage graphique des obstacles du niveau
     for (int j=0; j<monde->niveau.nbObstacle; j++){
@@ -13,6 +17,20 @@ void update_data(monde_t* monde){
     JumpJoueur(&monde->joueur.jump, &monde->joueur, &monde->joueur.compteurJump, &monde->joueur.sensJump);
 }
 
+/**
+ * @brief s'occupe des conséquences des différents choix fait par le jour dans le menu
+ * 
+ * @param choix int contenant le choix (de 1 à 5)
+ * @param niveau le niveau, qui sera initialisé
+ * @param ecran l'écran -> le rendu
+ */
+void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran){
+    if (choix[0]==1){
+        niveau->numero = 1;
+        niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +39,7 @@ monde_t monde;
 
 monde.fin = false;
 monde.pause = true;
+monde.menu.choix = 1;
 
 
 if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
@@ -47,24 +66,19 @@ monde.ecran = SDL_CreateRenderer(monde.fenetre, -1, SDL_RENDERER_ACCELERATED);
 //FOND
 monde.fond = charger_image("../fond.bmp", monde.ecran);
 //MENU (test à mettre dans une fonction)
-monde.menu = charger_image_transparente("../Menu.bmp", monde.ecran, 0, 255, 0);
+monde.menu.texturemenu = charger_image_transparente("../Menu.bmp", monde.ecran, 0, 255, 0);
 //FLECHE MENU
-monde.curseur = charger_image("../curseur.bmp", monde.ecran);
-SDL_Rect SpGraphique[1];
-SpGraphique[0].x = 600;
-SpGraphique[0].y = 50;
-SpGraphique[0].w = 50;
-SpGraphique[0].h = 50;
+monde.menu.curseur = charger_image("../curseur.bmp", monde.ecran);
+
+monde.menu.placecurseur[0].x = 600;
+monde.menu.placecurseur[0].y = 50;
+monde.menu.placecurseur[0].w = 50;
+monde.menu.placecurseur[0].h = 50;
 
 //*****SPRITE JOUEUR
 init_joueur(&monde.joueur);
 monde.joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", monde.ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 
-
-//**********OBSTACLE
-
-monde.niveau.numero = 1;
-monde.niveau.tabObstacle = chargerniveau(monde.niveau.numero, monde.ecran, &monde.niveau.nbObstacle);
 
 
 // Boucle principale
@@ -76,9 +90,7 @@ while(!monde.fin){
     if (!monde.pause){
         update_data(&monde);
     } else{
-        monde.joueur.SpriteFichier[0].y = 400/6;
-        SDL_RenderCopy(monde.ecran, monde.menu, NULL, NULL); 
-        SDL_RenderCopy(monde.ecran, monde.curseur, NULL, &SpGraphique[0]); 
+        handle_pause(&monde);
     }
 
     //Animation du sprite Joueur
@@ -90,7 +102,7 @@ while(!monde.fin){
 
 
     SDL_PollEvent( &monde.evenements );
-    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.choix);
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran);
 
     //Update
     SDL_RenderPresent(monde.ecran);
