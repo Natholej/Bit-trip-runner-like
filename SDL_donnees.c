@@ -106,7 +106,7 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param terminer jeu terminé ?
  * @param joueur le joueur
  */
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause){
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix){
     switch(evenements->type){
         case SDL_QUIT:
             terminer[0] = true; break;

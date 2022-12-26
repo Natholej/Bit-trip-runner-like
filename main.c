@@ -47,12 +47,14 @@ monde.ecran = SDL_CreateRenderer(monde.fenetre, -1, SDL_RENDERER_ACCELERATED);
 //FOND
 monde.fond = charger_image("../fond.bmp", monde.ecran);
 //MENU (test à mettre dans une fonction)
-monde.menu = charger_image("../Menu.bmp", monde.ecran);
-SDL_Rect DestR_Menu[1];
-DestR_Menu[0].x = 320;
-DestR_Menu[0].y = 180;
-DestR_Menu[0].w = 640; // Largeur du sprite
-DestR_Menu[0].h = 500; // Hauteur du sprite
+monde.menu = charger_image_transparente("../Menu.bmp", monde.ecran, 0, 255, 0);
+//FLECHE MENU
+monde.curseur = charger_image("../curseur.bmp", monde.ecran);
+SDL_Rect SpGraphique[1];
+SpGraphique[0].x = 600;
+SpGraphique[0].y = 50;
+SpGraphique[0].w = 50;
+SpGraphique[0].h = 50;
 
 //*****SPRITE JOUEUR
 init_joueur(&monde.joueur);
@@ -75,7 +77,8 @@ while(!monde.fin){
         update_data(&monde);
     } else{
         monde.joueur.SpriteFichier[0].y = 400/6;
-        SDL_RenderCopy(monde.ecran, monde.menu, NULL, &DestR_Menu[0]); //Copie la texture et la met sur le renderer
+        SDL_RenderCopy(monde.ecran, monde.menu, NULL, NULL); 
+        SDL_RenderCopy(monde.ecran, monde.curseur, NULL, &SpGraphique[0]); 
     }
 
     //Animation du sprite Joueur
@@ -87,7 +90,7 @@ while(!monde.fin){
 
 
     SDL_PollEvent( &monde.evenements );
-    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause);
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.choix);
 
     //Update
     SDL_RenderPresent(monde.ecran);

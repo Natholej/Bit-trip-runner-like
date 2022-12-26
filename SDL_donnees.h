@@ -59,10 +59,12 @@ struct monde{
     SDL_Renderer* ecran; //rendu de l'écran
     SDL_Texture* fond; //fond du jeu
     SDL_Texture* menu; //menu principale du jeu
+    SDL_Texture* curseur; //curseur du menu
     joueur_t joueur; //le joueur 
     niveau_t niveau; //niveau actuel
     bool fin;
     bool pause;
+    int choix; //choix du joueur dans le menu
 };
 
 typedef struct monde monde_t;
@@ -78,7 +80,7 @@ void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool 
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
 
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause);
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix);
 
 void deplacementObstacle(obstacle_t* obstacle);
 
