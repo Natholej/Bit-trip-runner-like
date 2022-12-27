@@ -56,14 +56,15 @@ void init_joueur(joueur_t* joueur){
     joueur->animation = true;
 }
 
-void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool marchersur){
+void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool peutCasser){
     obstacle->SpriteGraphique[0].x = x;
     obstacle->SpriteGraphique[0].y = y;
     obstacle->SpriteGraphique[0].w = w;
     obstacle->SpriteGraphique[0].h = h;
     obstacle->compteurVitesse = 0;
     obstacle->choc = false;
-    obstacle->peutMarcherSur = marchersur;
+    obstacle->peutEtrecasse = peutCasser;
+    obstacle->estDetruit = false;
 }
 
 
@@ -118,6 +119,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
         case SDL_KEYUP:
             joueur->SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
             roulade[0] = false;
+            joueur->CoupDePied = false;
             break;
         case SDL_KEYDOWN:
         //Différentes touches de claviers disponibles selon si le jeu est en pause ou non
@@ -158,6 +160,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                     break;
                     case SDLK_a:
                         joueur->SpriteFichier[0].y = 400 - 400/6;
+                        joueur->CoupDePied = true;
                     break;
                     case SDLK_SPACE: //Permet d'éxécuter la fonction de saut à la prochaine boucle, et désactive l'animation du sprite
                         joueur->jump = true;
@@ -196,11 +199,16 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     obstacle_t obstacle;
     if (strcmp(nomObstacle, "tronc1")==0){
         printf("tronc1\n");
-        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5, false);
+        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5, true);
     } else{
         if (strcmp(nomObstacle, "tronc2")==0){
             printf("tronc2\n");
-            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-75, 60, 30, 5, false);
+            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-30, 70, 30, 5, false);
+        } else{
+            if (strcmp(nomObstacle, "tronc3")==0){
+                printf("tronc3\n");
+                initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-75, 60, 30, 5, false);
+            }
         }
     }
     return obstacle;

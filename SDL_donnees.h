@@ -34,6 +34,7 @@ struct joueur{
     bool jump; //Est-ce que le joueur saute ?
     bool roulade; //Est-ce que le joueur fait une roulade ?
     bool animation; //Activer/désactiver l'animation du joueur
+    bool CoupDePied; //Quand il appuie sur la touche du coup de pied 
 };
 
 typedef struct joueur joueur_t;
@@ -43,7 +44,8 @@ struct obstacle{
     SDL_Texture* TextureObstacle;
     bool choc; //Collision avec le joueur
     int compteurVitesse; //Compteur pour controler la vitesse de l'obstacle
-    bool peutMarcherSur; //Est-ce que le joueur peut sauter dessus ? (true pour "escaliers")
+    bool peutEtrecasse; //Est-ce que le joueur peut le casser ? (Pour coups de pieds)
+    bool estDetruit; //Si il peut être cassé et il se casse, alors true
 };
 /**
  * \brief Représentation des obstacles
@@ -90,7 +92,7 @@ int animationJoueur(int compteSprite, SDL_Rect* DestR_JoueurSprite, SDL_Rect* Sr
 
 void init_joueur(joueur_t* joueur);
 
-void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool marchersur);
+void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool peutCasser);
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
 

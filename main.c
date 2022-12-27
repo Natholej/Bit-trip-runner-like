@@ -9,15 +9,23 @@ void update_data(monde_t* monde){
     //Affichage graphique des obstacles du niveau
     int bonusroulade;
     for (int j=0; j<monde->niveau.nbObstacle; j++){
-        SDL_RenderCopy(monde->ecran, monde->niveau.tabObstacle[j].TextureObstacle, NULL, &monde->niveau.tabObstacle[j].SpriteGraphique[0]);
+        //Si estDetruit est true, la texture ne se raffraichira pas donc il ne sera plus affiché
+        if (monde->niveau.tabObstacle[j].estDetruit== false){
+            SDL_RenderCopy(monde->ecran, monde->niveau.tabObstacle[j].TextureObstacle, NULL, &monde->niveau.tabObstacle[j].SpriteGraphique[0]);
+        }
         deplacementObstacle(&monde->niveau.tabObstacle[j]);
         if (monde->joueur.roulade){
             bonusroulade = JoueurH- JoueurHenRoulade;
         } else{
             bonusroulade = 0;
         }
-        if (sprites_collide(monde->joueur.SpriteGraphique, monde->niveau.tabObstacle[j].SpriteGraphique, bonusroulade)){
-            monde->niveau.tabObstacle = chargerniveau(monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
+        //Si collision et obstacle pas cassé, retour au début du niveau
+        if (sprites_collide(monde->joueur.SpriteGraphique, monde->niveau.tabObstacle[j].SpriteGraphique, bonusroulade) && monde->niveau.tabObstacle[j].estDetruit == false){
+            if (monde->joueur.CoupDePied == true && monde->niveau.tabObstacle[j].peutEtrecasse == true){
+            monde->niveau.tabObstacle[j].estDetruit = true;
+            } else{
+                monde->niveau.tabObstacle = chargerniveau(monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
+            }
         }
     }
     JumpJoueur(&monde->joueur.jump, &monde->joueur, &monde->joueur.compteurJump, &monde->joueur.sensJump);
@@ -34,6 +42,9 @@ void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran){
     if (choix[0]==1){
         niveau->numero = 1;
         niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
+    } if(choix[0]==2){
+        niveau->numero = 2;
+        niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
     }
 }
 
@@ -47,6 +58,7 @@ monde.fin = false;
 monde.pause = true;
 monde.menu.choix = 1;
 monde.niveau.compteurFin = 0;
+monde.joueur.CoupDePied = false;
 
 
 if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
