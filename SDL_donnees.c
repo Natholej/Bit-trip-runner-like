@@ -199,7 +199,7 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     obstacle_t obstacle;
     if (strcmp(nomObstacle, "tronc1")==0){
         printf("tronc1\n");
-        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5, true);
+        initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5, false);
     } else{
         if (strcmp(nomObstacle, "tronc2")==0){
             printf("tronc2\n");
@@ -208,6 +208,11 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
             if (strcmp(nomObstacle, "tronc3")==0){
                 printf("tronc3\n");
                 initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-75, 60, 30, 5, false);
+            } else{
+                if (strcmp(nomObstacle, "tronc4")==0){
+                printf("tronc4\n");
+                initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-70, 30, 70, 5, true);
+            }
             }
         }
     }

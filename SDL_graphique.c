@@ -90,6 +90,34 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
                 }
                 posX += 400;
             }
+        } else{
+            if (niveau==3){
+                nbObstacle[0] = 10; //On le définit pour le récupérer en dehors de la fonction
+                tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
+                char* tabString[nbObstacle[0]]; 
+                tabString[0] = "tronc2";
+                tabString[1] = "tronc4";
+                tabString[2] = "tronc3";
+                tabString[3] = "tronc1";
+                tabString[4] = "tronc3";
+                tabString[5] = "tronc4";
+                tabString[6] = "tronc2";
+                tabString[7] = "tronc3";
+                tabString[8] = "tronc1";
+                tabString[9] = "tronc4";
+
+                int posX = 1200; //position du premier obstacle définit arbitrairement
+
+                for (int i=0; i<nbObstacle[0]; i++){
+                    tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
+                    if (strcmp(tabString[i],"tronc1")==0){ //Si c'est le tronc1, on charge l'image qui correspond
+                        tabObstacle[i].TextureObstacle = charger_image("../Tronc1.bmp", ecran);
+                    } else{
+                        tabObstacle[i].TextureObstacle = charger_image("../Tronc2.bmp", ecran);
+                    }
+                    posX += 300;
+                }
+            }
         }
     }
     return tabObstacle;

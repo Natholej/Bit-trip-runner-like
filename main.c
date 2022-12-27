@@ -45,6 +45,9 @@ void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran){
     } if(choix[0]==2){
         niveau->numero = 2;
         niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
+    } if (choix[0]==3){
+        niveau->numero = 3;
+        niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
     }
 }
 
