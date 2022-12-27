@@ -58,10 +58,10 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
 
         for (int i=0; i<nbObstacle[0]; i++){
             tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-            if (strcmp(tabString[i],"tronc1")==0){ //Si c'est le tronc1, on charge l'image qui correspond
-                tabObstacle[i].TextureObstacle = charger_image("../Tronc1.bmp", ecran);
-            } else{ //Obligaotirement tronc2 pour le moment
-                tabObstacle[i].TextureObstacle = charger_image("../Tronc2.bmp", ecran);
+            if (strcmp(tabString[i],"tronc4")==0){ //Si c'est le tronc4, on charge l'image qui correspond
+                tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
+            } else{ //Si c'est pas le 4, alors ils ont tous la même base
+                tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
             }
             posX += 500;
         }
@@ -83,10 +83,10 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
 
             for (int i=0; i<nbObstacle[0]; i++){
                 tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-                if (strcmp(tabString[i],"tronc1")==0){ //Si c'est le tronc1, on charge l'image qui correspond
-                    tabObstacle[i].TextureObstacle = charger_image("../Tronc1.bmp", ecran);
+                if (strcmp(tabString[i],"tronc4")==0){ //Si c'est le tronc4, on charge l'image qui correspond
+                    tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
                 } else{
-                    tabObstacle[i].TextureObstacle = charger_image("../Tronc2.bmp", ecran);
+                    tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
                 }
                 posX += 400;
             }
@@ -110,10 +110,10 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
 
                 for (int i=0; i<nbObstacle[0]; i++){
                     tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-                    if (strcmp(tabString[i],"tronc1")==0){ //Si c'est le tronc1, on charge l'image qui correspond
-                        tabObstacle[i].TextureObstacle = charger_image("../Tronc1.bmp", ecran);
+                    if (strcmp(tabString[i],"tronc4")==0){ //Si c'est le tronc4, on charge l'image qui correspond
+                        tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
                     } else{
-                        tabObstacle[i].TextureObstacle = charger_image("../Tronc2.bmp", ecran);
+                        tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
                     }
                     posX += 300;
                 }

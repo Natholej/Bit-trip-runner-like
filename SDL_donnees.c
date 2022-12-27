@@ -282,6 +282,7 @@ void handle_pause(monde_t* monde){
 
 void victoire(monde_t* monde){
     if (monde->niveau.tabObstacle[monde->niveau.nbObstacle-1].SpriteGraphique[0].x<=0){
+        SDL_RenderCopy(monde->ecran, monde->niveau.victoire, NULL, NULL);
         if (monde->niveau.compteurFin <= CompteurFinNiveau){
             monde->niveau.compteurFin += 1;
         } else{

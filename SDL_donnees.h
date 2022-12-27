@@ -58,6 +58,7 @@ struct niveau{
     int nbObstacle; //nombre d'obstacle du niveau
     obstacle_t* tabObstacle;
     int compteurFin;
+    SDL_Texture* victoire; //écriture "victoire" à la fin du niveau
 };
 
 typedef struct niveau niveau_t;

@@ -91,6 +91,7 @@ monde.fond = charger_image("../fond.bmp", monde.ecran);
 monde.menu.texturemenu = charger_image_transparente("../Menu.bmp", monde.ecran, 0, 255, 0);
 //FLECHE MENU
 monde.menu.curseur = charger_image("../curseur.bmp", monde.ecran);
+monde.niveau.victoire = charger_image_transparente("../Victoire.bmp", monde.ecran, 0, 255, 0);
 
 monde.menu.placecurseur[0].x = 600;
 monde.menu.placecurseur[0].y = 50;
