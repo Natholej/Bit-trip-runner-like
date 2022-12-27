@@ -15,8 +15,8 @@ void InitSpriteJoueur(SDL_Rect* DestR_JoueurSprite, SDL_Rect* SrcR_JoueurSprite)
     
     SrcR_JoueurSprite[0].y = 0;
     SrcR_JoueurSprite[0].x = 0; //%3 car il y a 3 sprites par ligne, quand on change de y, i%3=0 pour les 3 suivants
-    SrcR_JoueurSprite[0].w = 200/3;
-    SrcR_JoueurSprite[0].h = 400/6;
+    SrcR_JoueurSprite[0].w = JoueurW;
+    SrcR_JoueurSprite[0].h = JoueurH;
 }
 
 
@@ -81,12 +81,12 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
         if (compteurJump[0] == CompteurJump){
             if (sens[0] == 0){
             joueur->SpriteGraphique[0].y -= 1;
-            if (joueur->SpriteGraphique[0].y <=300){
+            if (joueur->SpriteGraphique[0].y <=300){ //valeur arbitraire de jusqu'où le saut du joueur ira
                 sens[0] = 1;
             }
             } else{
                 joueur->SpriteGraphique[0].y += 1;
-                if (joueur->SpriteGraphique[0].y ==400){
+                if (joueur->SpriteGraphique[0].y ==PosYJoueur){
                     sens[0] = 0;
                     jump[0] = false;
                     joueur->animation = true;
@@ -105,13 +105,19 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param evenements les evenements effectués(appuie touche/souris)
  * @param terminer jeu terminé ?
  * @param joueur le joueur
+ * @param pause si le jeu est en pause
+ * @param choix le choix du joueur dans le menu
+ * @param niveau le niveau du jeu
+ * @param ecran : le renderer
+ * @param roulade : est-ce que le joueur fait une roulade ?
  */
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran){
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade){
     switch(evenements->type){
         case SDL_QUIT:
             terminer[0] = true; break;
         case SDL_KEYUP:
             joueur->SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
+            roulade[0] = false;
             break;
         case SDL_KEYDOWN:
         //Différentes touches de claviers disponibles selon si le jeu est en pause ou non
@@ -148,6 +154,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                         terminer[0] = true; break;
                     case SDLK_s: //Roulade, on met le sprite correspondant
                         joueur->SpriteFichier[0].y = (400/6)*2; 
+                        roulade[0] = true;
                     break;
                     case SDLK_a:
                         joueur->SpriteFichier[0].y = 400 - 400/6;
@@ -193,7 +200,7 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     } else{
         if (strcmp(nomObstacle, "tronc2")==0){
             printf("tronc2\n");
-            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-30, 60, 30, 5, false);
+            initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-75, 60, 30, 5, false);
         }
     }
     return obstacle;
@@ -202,17 +209,24 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX){
 /**
  * @brief gestion de la collision entre deux sprites (obstacle et joueur)
  * 
- * @param sp2 sprite
  * @param sp1 sprite
+ * @param sp2 sprite
+ * @param bonusRoulade bonus qui est de base à 0, mais si le joueur fait une roulade, il servira à baisser la valeur y du joueur, pour passer sous des obstacles
  * @return true si collision
  * @return false si pas de collision
  */
-bool sprites_collide(SDL_Rect sp2[1], SDL_Rect sp1[1]){
-    double r1=sqrt(sp1[0].h*sp1[0].h + sp1[0].w*sp1[0].w)/2; //définit le rayon du cercle du sprite, partant de son centre
-    double r2=sqrt(sp2[0].h*sp2[0].h + sp2[0].w*sp2[0].w)/2;
-    double v=sqrt((sp2[0].x-sp1[0].x)*(sp2[0].x-sp1[0].x) + (sp2[0].y-sp1[0].y)*(sp2[0].y-sp1[0].y)); //calcule le vecteur entre les deux sprites
-    if (v<r1+r2){ //si les deux rayons sont plus grands que le vecteur, alors ils se touchent
-        return true;
+bool sprites_collide(SDL_Rect Joueur[1], SDL_Rect Obstacle[1], int bonusRoulade){
+    //En abscisse
+    if (Joueur[0].x+JoueurW >= Obstacle[0].x && Joueur[0].x+JoueurW <= Obstacle[0].x+Obstacle[0].w){
+        //En ordonnée
+        //Joueur au-dessus de l'obstacle
+        if (Joueur[0].y+JoueurH-bonusRoulade >= Obstacle[0].y && Joueur[0].y+JoueurH-bonusRoulade <= Obstacle[0].y+Obstacle[0].h){
+            return true;
+        } else{ //Joueur au-dessous de l'obstacle
+            if (Joueur[0].y+bonusRoulade <= Obstacle[0].y+Obstacle[0].h && Joueur[0].y+bonusRoulade >= Obstacle[0].y){
+                return true;
+            }
+        }
     }
     return false;
 }

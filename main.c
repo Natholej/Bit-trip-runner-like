@@ -7,10 +7,16 @@
  */
 void update_data(monde_t* monde){
     //Affichage graphique des obstacles du niveau
+    int bonusroulade;
     for (int j=0; j<monde->niveau.nbObstacle; j++){
         SDL_RenderCopy(monde->ecran, monde->niveau.tabObstacle[j].TextureObstacle, NULL, &monde->niveau.tabObstacle[j].SpriteGraphique[0]);
         deplacementObstacle(&monde->niveau.tabObstacle[j]);
-        if (sprites_collide(monde->joueur.SpriteGraphique, monde->niveau.tabObstacle[j].SpriteGraphique)){
+        if (monde->joueur.roulade){
+            bonusroulade = JoueurH- JoueurHenRoulade;
+        } else{
+            bonusroulade = 0;
+        }
+        if (sprites_collide(monde->joueur.SpriteGraphique, monde->niveau.tabObstacle[j].SpriteGraphique, bonusroulade)){
             monde->niveau.tabObstacle = chargerniveau(monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
         }
     }
@@ -102,7 +108,7 @@ while(!monde.fin){
 
 
     SDL_PollEvent( &monde.evenements );
-    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran);
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran, &monde.joueur.roulade);
 
     //Update
     SDL_RenderPresent(monde.ecran);

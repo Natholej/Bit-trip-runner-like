@@ -12,12 +12,16 @@
 #define CompteurObstacle 3
 
 #define PosXJoueur 100
-#define PosYJoueur 400
+#define PosYJoueur 399
 
 #define HauteurSol 255
 
 #define HauteurEcran 720
 #define LargeurEcran 1280
+
+#define JoueurW 200/3
+#define JoueurH 400/6
+#define JoueurHenRoulade 40
 
 struct joueur{
     SDL_Rect SpriteGraphique[1]; //Position du joueur sur la carte
@@ -27,6 +31,7 @@ struct joueur{
     int sensJump; // Sens du saut (d'abord monter puis descendre);
     int compteurJump; //Compteur pour contrôler la vitesse du saut
     bool jump; //Est-ce que le joueur saute ?
+    bool roulade; //Est-ce que le joueur fait une roulade ?
     bool animation; //Activer/désactiver l'animation du joueur
 };
 
@@ -87,13 +92,13 @@ void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool 
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
 
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran);
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade);
 
 void deplacementObstacle(obstacle_t* obstacle);
 
 obstacle_t TrouverObstacle(char nomObstacle[], int posX);
 
-bool sprites_collide(SDL_Rect sp2[1], SDL_Rect sp1[1]);
+bool sprites_collide(SDL_Rect sp1[1], SDL_Rect sp2[1], int bonusRoulade);
 
 void handle_pause(monde_t* monde);
 
