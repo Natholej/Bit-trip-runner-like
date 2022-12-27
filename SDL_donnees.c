@@ -82,7 +82,7 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
         if (compteurJump[0] == CompteurJump){
             if (sens[0] == 0){
             joueur->SpriteGraphique[0].y -= 1;
-            if (joueur->SpriteGraphique[0].y <=300){ //valeur arbitraire de jusqu'où le saut du joueur ira
+            if (joueur->SpriteGraphique[0].y <=LimiteYJump){ //valeur arbitraire de jusqu'où le saut du joueur ira
                 sens[0] = 1;
             }
             } else{
@@ -118,8 +118,8 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
             terminer[0] = true; break;
         case SDL_KEYUP:
             joueur->SpriteFichier[0].y = 0; //Si on relève la touche appuyé, ça remet le sprite de course de base
-            roulade[0] = false;
-            joueur->CoupDePied = false;
+            roulade[0] = false; //On désactive la roulade quand le joueur lève une touche, si il est en roulade il se redresse, sinon rien
+            joueur->CoupDePied = false; //Même chose que la roulade
             break;
         case SDL_KEYDOWN:
         //Différentes touches de claviers disponibles selon si le jeu est en pause ou non
@@ -129,7 +129,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                     case SDLK_ESCAPE:
                         terminer[0] = true; break;
                     case SDLK_RETURN:
-                        handle_choix(choix, niveau, ecran);
+                        handle_choix(choix, niveau, ecran, terminer);
                         pause[0] = false;
                     break;
                     case SDLK_1:
@@ -179,7 +179,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
  */
 
 void deplacementObstacle(obstacle_t* obstacle){
-    if (obstacle->compteurVitesse == CompteurObstacle){
+    if (obstacle->compteurVitesse == CompteurObstacle){ //Compteur d'abord pour que le déplacement ne sois pas trop rapide
         obstacle->SpriteGraphique[0].x -= 1;
         obstacle->compteurVitesse = 0;
     } else{
@@ -197,20 +197,16 @@ void deplacementObstacle(obstacle_t* obstacle){
  */
 obstacle_t TrouverObstacle(char nomObstacle[], int posX){
     obstacle_t obstacle;
-    if (strcmp(nomObstacle, "tronc1")==0){
-        printf("tronc1\n");
+    if (strcmp(nomObstacle, "tronc1")==0){ //Tronc classique haut et peu large
         initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-40, 30, 40, 5, false);
     } else{
-        if (strcmp(nomObstacle, "tronc2")==0){
-            printf("tronc2\n");
+        if (strcmp(nomObstacle, "tronc2")==0){ //Tronc classique moins haut mais plus large
             initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-30, 70, 30, 5, false);
         } else{
-            if (strcmp(nomObstacle, "tronc3")==0){
-                printf("tronc3\n");
+            if (strcmp(nomObstacle, "troncRoulade")==0){ //Tronc en hauteur nécessitant une roulade (touche S)
                 initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-75, 60, 30, 5, false);
             } else{
-                if (strcmp(nomObstacle, "tronc4")==0){
-                printf("tronc4\n");
+                if (strcmp(nomObstacle, "troncCassable")==0){ //Tronc cassable nécessitant un coup de pied (touche A)
                 initObstacle(&obstacle, posX, HauteurEcran-HauteurSol-70, 30, 70, 5, true);
             }
             }
@@ -249,45 +245,75 @@ bool sprites_collide(SDL_Rect Joueur[1], SDL_Rect Obstacle[1], int bonusRoulade)
  * 
  * @param monde le monde
  */
-void handle_pause(monde_t* monde){
-    monde->joueur.SpriteFichier[0].y = 400/6;
-    if (monde->menu.choix==1){
-        monde->menu.placecurseur[0].y = 50;
-        monde->menu.placecurseur[0].x = 600;
+void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran){
+    joueur->SpriteFichier[0].y = 400/6;
+    if (menu->choix==1){
+        menu->placecurseur[0].y = 50;
+        menu->placecurseur[0].x = 600;
     } else{
-        if (monde->menu.choix==2){
-            monde->menu.placecurseur[0].y = 200;
-            monde->menu.placecurseur[0].x = 600;
+        if (menu->choix==2){
+            menu->placecurseur[0].y = 200;
+            menu->placecurseur[0].x = 600;
         } else{
-            if (monde->menu.choix==3){
-                monde->menu.placecurseur[0].y = 350;
-                monde->menu.placecurseur[0].x = 600;
+            if (menu->choix==3){
+                menu->placecurseur[0].y = 350;
+                menu->placecurseur[0].x = 600;
             } else{
-                if (monde->menu.choix==4){
-                    monde->menu.placecurseur[0].y = 500;
-                    monde->menu.placecurseur[0].x = 600;
+                if (menu->choix==4){
+                    menu->placecurseur[0].y = 500;
+                    menu->placecurseur[0].x = 600;
                 } else{
-                    if (monde->menu.choix==5){
-                        monde->menu.placecurseur[0].y = 630;
-                        monde->menu.placecurseur[0].x = 220;
+                    if (menu->choix==5){
+                        menu->placecurseur[0].y = 630;
+                        menu->placecurseur[0].x = 220;
                     }
                 }
             }
         }
     }
-    SDL_RenderCopy(monde->ecran, monde->menu.texturemenu, NULL, NULL); //affichage du menu
-    SDL_RenderCopy(monde->ecran, monde->menu.curseur, NULL, &monde->menu.placecurseur[0]); //curseur du menu
+    SDL_RenderCopy(ecran, menu->texturemenu, NULL, NULL); //affichage du menu
+    SDL_RenderCopy(ecran, menu->curseur, NULL, &menu->placecurseur[0]); //curseur du menu
 }
 
 
-void victoire(monde_t* monde){
-    if (monde->niveau.tabObstacle[monde->niveau.nbObstacle-1].SpriteGraphique[0].x<=0){
-        SDL_RenderCopy(monde->ecran, monde->niveau.victoire, NULL, NULL);
-        if (monde->niveau.compteurFin <= CompteurFinNiveau){
-            monde->niveau.compteurFin += 1;
+/**
+ * @brief S'occupe de la victoire (= quand le joueur a passé tous les obstacles)
+ * 
+ * @param niveau le niveau acutel
+ * @param pause jeux en pause ?
+ * @param ecran le renderer
+ */
+void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran){
+    if (niveau->tabObstacle[niveau->nbObstacle-1].SpriteGraphique[0].x<=0){ //Si le dernier obstacle est à x=0 alors il est passé derrière le joueur, le joueur a donc réussit
+        SDL_RenderCopy(ecran, niveau->victoire, NULL, NULL);
+        if (niveau->compteurFin <= CompteurFinNiveau){
+            niveau->compteurFin += 1;
         } else{
-            monde->pause = true;
-            monde->niveau.compteurFin = 0;
+            pause[0] = true;
+            niveau->compteurFin = 0;
+            free(niveau->tabObstacle);
         }
     }
+}
+
+
+/**
+ * @brief initialise toutes les données nécessaires de base au fonctionnement du jeu
+ * 
+ * @param monde le monde
+ */
+void initMonde(monde_t* monde){
+    monde->fin = false;
+    monde->pause = true;
+    monde->menu.choix = 1;
+    monde->niveau.compteurFin = 0;
+    monde->joueur.CoupDePied = false;
+    // Créer la fenêtre
+    monde->fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_RESIZABLE);
+
+    // Mettre en place un contexte de rendu de l’écran
+    monde->ecran = SDL_CreateRenderer(monde->fenetre, -1, SDL_RENDERER_ACCELERATED);
+
+    //*****SPRITE JOUEUR
+    init_joueur(&monde->joueur);
 }

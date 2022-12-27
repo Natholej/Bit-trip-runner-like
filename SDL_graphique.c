@@ -54,16 +54,13 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
         tabString[3] = "tronc2";
         tabString[4] = "tronc2";
 
-        int posX = 1200; //position du premier obstacle définit arbitrairement
+        int posX = PosPremierObstacleNiveau; //position du premier obstacle définit arbitrairement
 
         for (int i=0; i<nbObstacle[0]; i++){
             tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-            if (strcmp(tabString[i],"tronc4")==0){ //Si c'est le tronc4, on charge l'image qui correspond
-                tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
-            } else{ //Si c'est pas le 4, alors ils ont tous la même base
-                tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
-            }
-            posX += 500;
+            tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
+
+            posX += 500; //distance entre l'obstacle et le suivant
         }
     } else{
         if (niveau==2){
@@ -72,23 +69,20 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
             char* tabString[nbObstacle[0]]; 
             tabString[0] = "tronc2";
             tabString[1] = "tronc2";
-            tabString[2] = "tronc3";
+            tabString[2] = "troncRoulade";
             tabString[3] = "tronc1";
-            tabString[4] = "tronc3";
+            tabString[4] = "troncRoulade";
             tabString[5] = "tronc1";
             tabString[6] = "tronc2";
-            tabString[7] = "tronc3";
+            tabString[7] = "troncRoulade";
 
-            int posX = 1200; //position du premier obstacle définit arbitrairement
+            int posX = PosPremierObstacleNiveau; //position du premier obstacle définit arbitrairement
 
             for (int i=0; i<nbObstacle[0]; i++){
                 tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-                if (strcmp(tabString[i],"tronc4")==0){ //Si c'est le tronc4, on charge l'image qui correspond
-                    tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
-                } else{
-                    tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
-                }
-                posX += 400;
+                tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
+
+                posX += 400; //distance entre l'obstacle et le suivant
             }
         } else{
             if (niveau==3){
@@ -96,30 +90,49 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
                 tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
                 char* tabString[nbObstacle[0]]; 
                 tabString[0] = "tronc2";
-                tabString[1] = "tronc4";
-                tabString[2] = "tronc3";
+                tabString[1] = "troncCassable";
+                tabString[2] = "troncRoulade";
                 tabString[3] = "tronc1";
-                tabString[4] = "tronc3";
-                tabString[5] = "tronc4";
+                tabString[4] = "troncRoulade";
+                tabString[5] = "troncCassable";
                 tabString[6] = "tronc2";
-                tabString[7] = "tronc3";
+                tabString[7] = "troncRoulade";
                 tabString[8] = "tronc1";
-                tabString[9] = "tronc4";
+                tabString[9] = "troncCassable";
 
-                int posX = 1200; //position du premier obstacle définit arbitrairement
+                int posX = PosPremierObstacleNiveau; //position du premier obstacle définit arbitrairement
 
                 for (int i=0; i<nbObstacle[0]; i++){
                     tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-                    if (strcmp(tabString[i],"tronc4")==0){ //Si c'est le tronc4, on charge l'image qui correspond
+                    if (strcmp(tabString[i],"troncCassable")==0){ //Si c'est le troncCassable, on charge l'image qui correspond, différente des autres (rouge)
                         tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
                     } else{
                         tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
                     }
-                    posX += 300;
+                    posX += 300; //distance entre l'obstacle et le suivant
                 }
             }
         }
     }
     return tabObstacle;
 
+}
+
+void initTexture(monde_t* monde){
+    //****Chargement image
+    //FOND
+    monde->fond = charger_image("../fond.bmp", monde->ecran);
+    //MENU (test à mettre dans une fonction)
+    monde->menu.texturemenu = charger_image_transparente("../Menu.bmp", monde->ecran, 0, 255, 0);
+    //FLECHE MENU
+    monde->menu.curseur = charger_image("../curseur.bmp", monde->ecran);
+    monde->niveau.victoire = charger_image_transparente("../Victoire.bmp", monde->ecran, 0, 255, 0);
+
+    //Place du curseur dans le menu
+    monde->menu.placecurseur[0].x = 600;
+    monde->menu.placecurseur[0].y = 50;
+    monde->menu.placecurseur[0].w = 50;
+    monde->menu.placecurseur[0].h = 50;
+
+    monde->joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", monde->ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 }

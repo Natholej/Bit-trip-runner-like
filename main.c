@@ -38,7 +38,7 @@ void update_data(monde_t* monde){
  * @param niveau le niveau, qui sera initialisé
  * @param ecran l'écran -> le rendu
  */
-void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran){
+void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer){
     if (choix[0]==1){
         niveau->numero = 1;
         niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
@@ -48,6 +48,8 @@ void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran){
     } if (choix[0]==3){
         niveau->numero = 3;
         niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
+    } if (choix[0]==5){
+        terminer[0] = true;
     }
 }
 
@@ -57,50 +59,12 @@ int main(int argc, char *argv[])
 
 monde_t monde;
 
-monde.fin = false;
-monde.pause = true;
-monde.menu.choix = 1;
-monde.niveau.compteurFin = 0;
-monde.joueur.CoupDePied = false;
 
+SDL_Init(SDL_INIT_VIDEO);
 
-if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
-    printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
-    SDL_Quit();
-    return EXIT_FAILURE;
-}
+initMonde(&monde);
 
-
-// Créer la fenêtre
-monde.fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,
-SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_RESIZABLE);
-if(monde.fenetre == NULL){ // En cas d’erreur
-    printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
-    SDL_Quit();
-    return EXIT_FAILURE;
-}
-
-
-// Mettre en place un contexte de rendu de l’écran
-monde.ecran = SDL_CreateRenderer(monde.fenetre, -1, SDL_RENDERER_ACCELERATED);
-
-//****Chargement image
-//FOND
-monde.fond = charger_image("../fond.bmp", monde.ecran);
-//MENU (test à mettre dans une fonction)
-monde.menu.texturemenu = charger_image_transparente("../Menu.bmp", monde.ecran, 0, 255, 0);
-//FLECHE MENU
-monde.menu.curseur = charger_image("../curseur.bmp", monde.ecran);
-monde.niveau.victoire = charger_image_transparente("../Victoire.bmp", monde.ecran, 0, 255, 0);
-
-monde.menu.placecurseur[0].x = 600;
-monde.menu.placecurseur[0].y = 50;
-monde.menu.placecurseur[0].w = 50;
-monde.menu.placecurseur[0].h = 50;
-
-//*****SPRITE JOUEUR
-init_joueur(&monde.joueur);
-monde.joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", monde.ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
+initTexture(&monde);
 
 
 
@@ -112,9 +76,9 @@ while(!monde.fin){
 
     if (!monde.pause){
         update_data(&monde);
-        victoire(&monde);
+        victoire(&monde.niveau, &monde.pause, monde.ecran);
     } else{
-        handle_pause(&monde);
+        handle_pause(&monde.joueur, &monde.menu, monde.ecran);
     }
 
     //Animation du sprite Joueur

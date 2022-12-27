@@ -24,6 +24,10 @@
 #define JoueurH 400/6
 #define JoueurHenRoulade 40
 
+#define LimiteYJump 300 //Limite de la hauteur du saut, une fois atteinte, le joueur commence à redescendre
+
+#define PosPremierObstacleNiveau 1200 //Coordonnée x du premier obstacle des niveaux
+
 struct joueur{
     SDL_Rect SpriteGraphique[1]; //Position du joueur sur la carte
     SDL_Rect SpriteFichier[1]; //Position du sprite du joueur dans le fichier
@@ -41,7 +45,7 @@ typedef struct joueur joueur_t;
 
 struct obstacle{
     SDL_Rect SpriteGraphique[1]; //Position du sprite sur la carte
-    SDL_Texture* TextureObstacle;
+    SDL_Texture* TextureObstacle; //texture de l'obstacle
     bool choc; //Collision avec le joueur
     int compteurVitesse; //Compteur pour controler la vitesse de l'obstacle
     bool peutEtrecasse; //Est-ce que le joueur peut le casser ? (Pour coups de pieds)
@@ -54,23 +58,24 @@ typedef struct obstacle obstacle_t;
 
 
 struct niveau{
-    int numero;
+    int numero; //numéro du niveau
     int nbObstacle; //nombre d'obstacle du niveau
-    obstacle_t* tabObstacle;
-    int compteurFin;
+    obstacle_t* tabObstacle; //tableau contenant tout les obstacles du niveau
+    int compteurFin; //compteur avant que le niveau ne se termine une fois que le joueur a passé le dernier obstacle
     SDL_Texture* victoire; //écriture "victoire" à la fin du niveau
 };
 
 typedef struct niveau niveau_t;
 
 struct menu{
-    SDL_Texture* texturemenu;
-    SDL_Texture* curseur;
-    int choix;
-    SDL_Rect placecurseur[1];
+    SDL_Texture* texturemenu; //l'image affiché pour le menu
+    SDL_Texture* curseur; //image représentant le curseur
+    int choix; //choix actuel du joueur (un choix = une case séléctionnée)
+    SDL_Rect placecurseur[1]; //place du curseur à l'écran, qui bouge selon le choix du joueur
 };
 
 typedef struct menu menu_t;
+
 
 struct monde{
     SDL_Window* fenetre; //fenetre du jeu
@@ -80,8 +85,8 @@ struct monde{
     joueur_t joueur; //le joueur 
     niveau_t niveau; //niveau actuel
     menu_t menu; //le menu
-    bool fin;
-    bool pause;
+    bool fin; //fin du jeu ?
+    bool pause; //jeux en pause ?
 };
 
 typedef struct monde monde_t;
@@ -105,8 +110,10 @@ obstacle_t TrouverObstacle(char nomObstacle[], int posX);
 
 bool sprites_collide(SDL_Rect sp1[1], SDL_Rect sp2[1], int bonusRoulade);
 
-void handle_pause(monde_t* monde);
+void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran);
 
-void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran);
+void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer);
 
-void victoire(monde_t* monde);
+void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran);
+
+void initMonde(monde_t* monde);
