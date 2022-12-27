@@ -10,6 +10,7 @@
 
 #define CompteurJump 5
 #define CompteurObstacle 3
+#define CompteurFinNiveau 4000
 
 #define PosXJoueur 100
 #define PosYJoueur 399
@@ -54,6 +55,7 @@ struct niveau{
     int numero;
     int nbObstacle; //nombre d'obstacle du niveau
     obstacle_t* tabObstacle;
+    int compteurFin;
 };
 
 typedef struct niveau niveau_t;
@@ -103,3 +105,5 @@ bool sprites_collide(SDL_Rect sp1[1], SDL_Rect sp2[1], int bonusRoulade);
 void handle_pause(monde_t* monde);
 
 void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran);
+
+void victoire(monde_t* monde);

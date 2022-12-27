@@ -18,10 +18,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 #${SRC_DIR}/cmake/sdl2 of CMAKE_MODULE_PATH
 find_package( SDL2 )
 find_package( SDL2_TTF )
-find_library(MATH_LIBRARY m)
-if(MATH_LIBRARY)
-    target_link_libraries(${PROJECT_NAME} SDL2::Main ${MATH_LIBRARY})
-endif()
 
 if( ${SDL2_FOUND} AND ${SDL2_TTF_FOUND})
 message(STATUS "Found SDL2 and SDL2_TTF")

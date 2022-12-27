@@ -46,6 +46,7 @@ monde_t monde;
 monde.fin = false;
 monde.pause = true;
 monde.menu.choix = 1;
+monde.niveau.compteurFin = 0;
 
 
 if(SDL_Init(SDL_INIT_VIDEO) < 0){ // Initialisation de la SDL
@@ -95,6 +96,7 @@ while(!monde.fin){
 
     if (!monde.pause){
         update_data(&monde);
+        victoire(&monde);
     } else{
         handle_pause(&monde);
     }

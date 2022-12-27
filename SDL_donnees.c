@@ -265,3 +265,15 @@ void handle_pause(monde_t* monde){
     SDL_RenderCopy(monde->ecran, monde->menu.texturemenu, NULL, NULL); //affichage du menu
     SDL_RenderCopy(monde->ecran, monde->menu.curseur, NULL, &monde->menu.placecurseur[0]); //curseur du menu
 }
+
+
+void victoire(monde_t* monde){
+    if (monde->niveau.tabObstacle[monde->niveau.nbObstacle-1].SpriteGraphique[0].x<=0){
+        if (monde->niveau.compteurFin <= CompteurFinNiveau){
+            monde->niveau.compteurFin += 1;
+        } else{
+            monde->pause = true;
+            monde->niveau.compteurFin = 0;
+        }
+    }
+}
