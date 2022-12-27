@@ -221,6 +221,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                     }
                 }
             }
+        break;
     }
 }
 
