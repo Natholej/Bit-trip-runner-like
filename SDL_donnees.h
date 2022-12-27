@@ -67,15 +67,23 @@ struct niveau{
 
 typedef struct niveau niveau_t;
 
+
+struct souris{
+    int posX; //Position x de la souris
+    int posY; //Position y de la souris
+};
+
+typedef struct souris souris_t;
+
 struct menu{
     SDL_Texture* texturemenu; //l'image affiché pour le menu
     SDL_Texture* curseur; //image représentant le curseur
     int choix; //choix actuel du joueur (un choix = une case séléctionnée)
     SDL_Rect placecurseur[1]; //place du curseur à l'écran, qui bouge selon le choix du joueur
+    souris_t souris;
 };
 
 typedef struct menu menu_t;
-
 
 struct monde{
     SDL_Window* fenetre; //fenetre du jeu
@@ -102,7 +110,7 @@ void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool 
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
 
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade);
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris);
 
 void deplacementObstacle(obstacle_t* obstacle);
 

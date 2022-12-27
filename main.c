@@ -90,7 +90,7 @@ while(!monde.fin){
 
 
     SDL_PollEvent( &monde.evenements );
-    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran, &monde.joueur.roulade);
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran, &monde.joueur.roulade, &monde.menu.souris);
 
     //Update
     SDL_RenderPresent(monde.ecran);
