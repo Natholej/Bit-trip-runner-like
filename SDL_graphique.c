@@ -58,7 +58,7 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
 
         for (int i=0; i<nbObstacle[0]; i++){
             tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-            tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
+            tabObstacle[i].TextureObstacle = charger_image("../Ressources/Tronc.bmp", ecran);
 
             posX += 500; //distance entre l'obstacle et le suivant
         }
@@ -80,7 +80,7 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
 
             for (int i=0; i<nbObstacle[0]; i++){
                 tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
-                tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
+                tabObstacle[i].TextureObstacle = charger_image("../Ressources/Tronc.bmp", ecran);
 
                 posX += 400; //distance entre l'obstacle et le suivant
             }
@@ -105,9 +105,9 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
                 for (int i=0; i<nbObstacle[0]; i++){
                     tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
                     if (strcmp(tabString[i],"troncCassable")==0){ //Si c'est le troncCassable, on charge l'image qui correspond, différente des autres (rouge)
-                        tabObstacle[i].TextureObstacle = charger_image("../TroncCassable.bmp", ecran);
+                        tabObstacle[i].TextureObstacle = charger_image("../Ressources/TroncCassable.bmp", ecran);
                     } else{
-                        tabObstacle[i].TextureObstacle = charger_image("../Tronc.bmp", ecran);
+                        tabObstacle[i].TextureObstacle = charger_image("../Ressources/Tronc.bmp", ecran);
                     }
                     posX += 300; //distance entre l'obstacle et le suivant
                 }
@@ -121,12 +121,12 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
 void initTexture(monde_t* monde){
     //****Chargement image
     //FOND
-    monde->fond = charger_image("../fond.bmp", monde->ecran);
+    monde->fond = charger_image("../Ressources/fond.bmp", monde->ecran);
     //MENU (test à mettre dans une fonction)
-    monde->menu.texturemenu = charger_image_transparente("../Menu.bmp", monde->ecran, 0, 255, 0);
+    monde->menu.texturemenu = charger_image_transparente("../Ressources/Menu.bmp", monde->ecran, 0, 255, 0);
     //FLECHE MENU
-    monde->menu.curseur = charger_image("../curseur.bmp", monde->ecran);
-    monde->niveau.victoire = charger_image_transparente("../Victoire.bmp", monde->ecran, 0, 255, 0);
+    monde->menu.curseur = charger_image("../Ressources/curseur.bmp", monde->ecran);
+    monde->niveau.victoire = charger_image_transparente("../Ressources/Victoire.bmp", monde->ecran, 0, 255, 0);
 
     //Place du curseur dans le menu
     monde->menu.placecurseur[0].x = 600;
@@ -134,5 +134,5 @@ void initTexture(monde_t* monde){
     monde->menu.placecurseur[0].w = 50;
     monde->menu.placecurseur[0].h = 50;
 
-    monde->joueur.JoueurSprite = charger_image_transparente("../sprites.bmp", monde->ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
+    monde->joueur.JoueurSprite = charger_image_transparente("../Ressources/sprites.bmp", monde->ecran, 0, 255, 255); //Compteur pour réduire fréquence du mouvement du sprite du joueur
 }
