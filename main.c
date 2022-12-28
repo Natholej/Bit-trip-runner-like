@@ -24,7 +24,7 @@ void update_data(monde_t* monde){
             if (monde->joueur.CoupDePied == true && monde->niveau.tabObstacle[j].peutEtrecasse == true){
             monde->niveau.tabObstacle[j].estDetruit = true;
             } else{
-                monde->niveau.tabObstacle = chargerniveau(monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
+                monde->niveau.tabObstacle = chargerniveau(&monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
             }
         }
     }
@@ -38,16 +38,19 @@ void update_data(monde_t* monde){
  * @param niveau le niveau, qui sera initialisé
  * @param ecran l'écran -> le rendu
  */
-void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer){
+void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer, bool* pause, int* niveauAccompli){
     if (choix[0]==1){
         niveau->numero = 1;
-        niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
-    } if(choix[0]==2){
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle);
+        pause[0] = false;
+    } if(choix[0]==2 && niveauAccompli[0]>=1){
         niveau->numero = 2;
-        niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
-    } if (choix[0]==3){
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle);
+        pause[0] = false;
+    } if (choix[0]==3 && niveauAccompli[0]>=2){
         niveau->numero = 3;
-        niveau->tabObstacle = chargerniveau(niveau->numero, ecran, &niveau->nbObstacle);
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle);
+        pause[0] = false;
     } if (choix[0]==5){
         terminer[0] = true;
     }
@@ -76,7 +79,7 @@ while(!monde.fin){
 
     if (!monde.pause){
         update_data(&monde);
-        victoire(&monde.niveau, &monde.pause, monde.ecran);
+        victoire(&monde.niveau, &monde.pause, monde.ecran, &monde.niveauAccompli);
     } else{
         handle_pause(&monde.joueur, &monde.menu, monde.ecran);
     }
@@ -90,7 +93,7 @@ while(!monde.fin){
 
 
     SDL_PollEvent( &monde.evenements );
-    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran, &monde.joueur.roulade, &monde.menu.souris);
+    handle_events(&monde.evenements, &monde.fin, &monde.joueur, &monde.pause, &monde.menu.choix, &monde.niveau, monde.ecran, &monde.joueur.roulade, &monde.menu.souris, &monde.niveauAccompli);
 
     //Update
     SDL_RenderPresent(monde.ecran);

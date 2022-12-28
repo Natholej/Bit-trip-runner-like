@@ -95,6 +95,7 @@ struct monde{
     menu_t menu; //le menu
     bool fin; //fin du jeu ?
     bool pause; //jeux en pause ?
+    int niveauAccompli; //nombre de niveau accompli (de 0 à 3)
 };
 
 typedef struct monde monde_t;
@@ -110,7 +111,7 @@ void initObstacle(obstacle_t* obstacle, int x, int y, int w, int h, int v, bool 
 
 void JumpJoueur(bool* jump, joueur_t* joueur, int* compteur, int* sens);
 
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris);
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris, int* niveauAccompli);
 
 void deplacementObstacle(obstacle_t* obstacle);
 
@@ -120,8 +121,8 @@ bool sprites_collide(SDL_Rect sp1[1], SDL_Rect sp2[1], int bonusRoulade);
 
 void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran);
 
-void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer);
+void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer, bool* pause, int* niveauAccompli);
 
-void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran);
+void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran, int* niveauAccompli);
 
 void initMonde(monde_t* monde);

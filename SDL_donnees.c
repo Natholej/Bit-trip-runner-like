@@ -112,7 +112,7 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param ecran : le renderer
  * @param roulade : est-ce que le joueur fait une roulade ?
  */
-void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris){
+void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris, int* niveauAccompli){
     switch(evenements->type){
         case SDL_QUIT:
             terminer[0] = true; break;
@@ -131,8 +131,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                         terminer[0] = true; break;
                     //Touche entrer
                     case SDLK_RETURN:
-                        handle_choix(choix, niveau, ecran, terminer);
-                        pause[0] = false;
+                        handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                     break;
                     //Touche "1" choix 1, Touche "2" choix 2 etc....
                     case SDLK_1:
@@ -186,35 +185,35 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
             if (souris->posX >= 700 && souris->posY>=0 && souris->posY<=150){ 
                 joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                 choix[0] = 1;
-                handle_choix(choix, niveau, ecran, terminer);
+                handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                 pause[0] = false;
             } else{
                 //Case 2 (= niveau 2)
                 if (souris->posX >= 700 && souris->posY>=150 && souris->posY<=300){
                     joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                     choix[0] = 2;
-                    handle_choix(choix, niveau, ecran, terminer);
+                    handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                     pause[0] = false;
                 } else{
                     //Case 3 (= niveau 3)
                     if (souris->posX >= 700 && souris->posY>=300 && souris->posY<=450){
                         joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                         choix[0] = 3;
-                        handle_choix(choix, niveau, ecran, terminer);
+                        handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                         pause[0] = false;
                     } else{
                         //Case 4 (= niveau 4)
                         if (souris->posX >= 700 && souris->posY>=450 && souris->posY<=600){
                             joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                             choix[0] = 4;
-                            handle_choix(choix, niveau, ecran, terminer);
+                            handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                             pause[0] = false;
                         } else{
                             //Case 5 (= Quitter)
                             if (souris->posX >= 400 && souris->posX <= 800 && souris->posY>=600 && souris->posY<=720){
                                 joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                                 choix[0] = 5;
-                                handle_choix(choix, niveau, ecran, terminer);
+                                handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                                 pause[0] = false;
                             }
                         }
@@ -336,7 +335,7 @@ void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran){
  * @param pause jeux en pause ?
  * @param ecran le renderer
  */
-void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran){
+void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran, int* niveauAccompli){
     if (niveau->tabObstacle[niveau->nbObstacle-1].SpriteGraphique[0].x<=0){ //Si le dernier obstacle est à x=0 alors il est passé derrière le joueur, le joueur a donc réussit
         SDL_RenderCopy(ecran, niveau->victoire, NULL, NULL);
         if (niveau->compteurFin <= CompteurFinNiveau){
@@ -344,6 +343,9 @@ void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran){
         } else{
             pause[0] = true;
             niveau->compteurFin = 0;
+            if (niveauAccompli[0] <= niveau->numero){
+                niveauAccompli[0] = niveau->numero;
+            }
             free(niveau->tabObstacle);
         }
     }
@@ -361,6 +363,7 @@ void initMonde(monde_t* monde){
     monde->menu.choix = 1;
     monde->niveau.compteurFin = 0;
     monde->joueur.CoupDePied = false;
+    monde->niveauAccompli = 0;
     // Créer la fenêtre
     monde->fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_RESIZABLE);
 

@@ -42,9 +42,9 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
  * @param nbObstacle le nombre d'obstacle (qu'on récupèrera pour la boucle principale du jeu)
  * @return le tableau contenat les obstacles 
  */
-obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
+obstacle_t* chargerniveau(int* niveau, SDL_Renderer* ecran, int* nbObstacle){
     obstacle_t* tabObstacle;
-    if (niveau==1){
+    if (niveau[0]==1){
         nbObstacle[0] = 5; //On le définit pour le récupérer en dehors de la fonction
         tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
         char* tabString[nbObstacle[0]]; 
@@ -63,7 +63,7 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
             posX += 500; //distance entre l'obstacle et le suivant
         }
     } else{
-        if (niveau==2){
+        if (niveau[0]==2){
             nbObstacle[0] = 8; //On le définit pour le récupérer en dehors de la fonction
             tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
             char* tabString[nbObstacle[0]]; 
@@ -85,7 +85,7 @@ obstacle_t* chargerniveau(int niveau, SDL_Renderer* ecran, int* nbObstacle){
                 posX += 400; //distance entre l'obstacle et le suivant
             }
         } else{
-            if (niveau==3){
+            if (niveau[0]==3){
                 nbObstacle[0] = 10; //On le définit pour le récupérer en dehors de la fonction
                 tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
                 char* tabString[nbObstacle[0]]; 
