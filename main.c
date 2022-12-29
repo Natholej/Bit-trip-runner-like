@@ -37,6 +37,9 @@ void update_data(monde_t* monde){
  * @param choix int contenant le choix (de 1 à 5)
  * @param niveau le niveau, qui sera initialisé
  * @param ecran l'écran -> le rendu
+ * @param terminer jeu terminé ?
+ * @param pause jeu en pause ?
+ * @param niveauAccompli nombre de niveau accompli
  */
 void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer, bool* pause, int* niveauAccompli){
     if (choix[0]==1){
@@ -68,7 +71,6 @@ SDL_Init(SDL_INIT_VIDEO);
 initMonde(&monde);
 
 initTexture(&monde);
-
 
 
 // Boucle principale

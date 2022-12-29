@@ -118,6 +118,11 @@ obstacle_t* chargerniveau(int* niveau, SDL_Renderer* ecran, int* nbObstacle){
 
 }
 
+/**
+ * @brief initialise les textures du monde au lancement du jeu
+ * 
+ * @param monde le monde
+ */
 void initTexture(monde_t* monde){
     //****Chargement image
     //FOND

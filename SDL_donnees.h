@@ -126,3 +126,7 @@ void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* termi
 void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran, int* niveauAccompli);
 
 void initMonde(monde_t* monde);
+
+void chargerSauvegarde(monde_t* monde);
+
+void EcrireSauvegarde(int* niveauAccompli);

@@ -111,6 +111,8 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param niveau le niveau du jeu
  * @param ecran : le renderer
  * @param roulade : est-ce que le joueur fait une roulade ?
+ * @param souris la souris
+ * @param niveauAccompli nombre de niveau accompli
  */
 void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris, int* niveauAccompli){
     switch(evenements->type){
@@ -149,6 +151,8 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                     case SDLK_5:
                         choix[0] = 5;
                     break;
+                    case SDLK_s:
+                        EcrireSauvegarde(niveauAccompli);
                 }
             } 
             //NON EN PAUSE
@@ -244,7 +248,7 @@ void deplacementObstacle(obstacle_t* obstacle){
  * @brief cherche l'obstacle correspondant à partir du nom, et l'initialise
  * 
  * @param nomObstacle nom de l'obstacle
- * @param ecran  le renderer
+ * @param posX position X de l'obstacle
  * @return l'obstacle initialisé
  */
 obstacle_t TrouverObstacle(char nomObstacle[], int posX){
@@ -295,7 +299,9 @@ bool sprites_collide(SDL_Rect Joueur[1], SDL_Rect Obstacle[1], int bonusRoulade)
 /**
  * @brief S'occupe des changements durant que le jeu est en pause (le menu) : curseur et renderer
  * 
- * @param monde le monde
+ * @param joueur le joueur
+ * @param menu le menu
+ * @param ecran le renderer
  */
 void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran){
     joueur->SpriteFichier[0].y = 400/6;
@@ -334,6 +340,7 @@ void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran){
  * @param niveau le niveau acutel
  * @param pause jeux en pause ?
  * @param ecran le renderer
+ * @param niveauAccompli nombre de niveau accompli
  */
 void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran, int* niveauAccompli){
     if (niveau->tabObstacle[niveau->nbObstacle-1].SpriteGraphique[0].x<=0){ //Si le dernier obstacle est à x=0 alors il est passé derrière le joueur, le joueur a donc réussit
@@ -372,4 +379,36 @@ void initMonde(monde_t* monde){
 
     //*****SPRITE JOUEUR
     init_joueur(&monde->joueur);
+    
+    chargerSauvegarde(monde);
+}
+
+
+/**
+ * @brief Charge une sauvegarde si elle existe
+ * 
+ * @param monde le monde 
+ */
+void chargerSauvegarde(monde_t* monde){
+    FILE* fichier = NULL;
+    fichier = fopen("../sauvegarde","r");
+    char str[2];
+    if (fichier!=NULL){
+        fgets(str,2,fichier);
+        monde->niveauAccompli = atoi(str); 
+        fclose(fichier);
+    }
+}
+
+/**
+ * @brief Ecrit un fichier sauvegarde, où le nombre de niveaux accomplis y est inscrit
+ * 
+ * @param niveauAccompli nombre de niveaux accomplis
+ */
+void EcrireSauvegarde(int* niveauAccompli){
+    FILE* fichier = fopen("../sauvegarde","w");
+    char str[10];
+    sprintf(str, "%d", niveauAccompli[0]);
+    fputs(str,fichier);
+    fclose(fichier);
 }
