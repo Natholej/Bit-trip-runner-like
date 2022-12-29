@@ -24,11 +24,30 @@ void update_data(monde_t* monde){
             if (monde->joueur.CoupDePied == true && monde->niveau.tabObstacle[j].peutEtrecasse == true){
             monde->niveau.tabObstacle[j].estDetruit = true;
             } else{
-                monde->niveau.tabObstacle = chargerniveau(&monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle);
+                monde->niveau.tabObstacle = chargerniveau(&monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle, &monde->niveau.score);
             }
         }
     }
+    //Gestion du saut du joueur
     JumpJoueur(&monde->joueur.jump, &monde->joueur, &monde->joueur.compteurJump, &monde->joueur.sensJump);
+
+    //Pour le mode arcade, génération d'un nouvel obstacle à chaque fois
+    if (monde->niveau.numero==4){
+        for (int i=0; i<monde->niveau.nbObstacle; i++){
+            if (monde->niveau.tabObstacle[i].SpriteGraphique[0].x <0){
+                char* obst = trouverStringObstacle(rand()%4);
+                monde->niveau.tabObstacle[i] = TrouverObstacle(obst, PosPremierObstacleNiveau);
+                if (strcmp(obst,"troncCassable")==0){ //Si c'est le troncCassable, on charge l'image qui correspond, différente des autres (rouge)
+                    monde->niveau.tabObstacle[i].TextureObstacle = charger_image("../Ressources/TroncCassable.bmp", monde->ecran);
+                } else{
+                    monde->niveau.tabObstacle[i].TextureObstacle = charger_image("../Ressources/Tronc.bmp", monde->ecran);
+                }
+
+                monde->niveau.score +=1 ;
+                printf("%d\n", monde->niveau.score);
+            }
+        }
+    }
 }
 
 /**
@@ -44,15 +63,19 @@ void update_data(monde_t* monde){
 void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* terminer, bool* pause, int* niveauAccompli){
     if (choix[0]==1){
         niveau->numero = 1;
-        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle);
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle, &niveau->score);
         pause[0] = false;
     } if(choix[0]==2 && niveauAccompli[0]>=1){
         niveau->numero = 2;
-        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle);
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle, &niveau->score);
         pause[0] = false;
     } if (choix[0]==3 && niveauAccompli[0]>=2){
         niveau->numero = 3;
-        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle);
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle, &niveau->score);
+        pause[0] = false;
+    } if (choix[0]==4){
+        niveau->numero = 4;
+        niveau->tabObstacle = chargerniveau(&niveau->numero, ecran, &niveau->nbObstacle, &niveau->score);
         pause[0] = false;
     } if (choix[0]==5){
         terminer[0] = true;
@@ -62,6 +85,8 @@ void handle_choix(int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* termi
 
 int main(int argc, char *argv[])
 {
+
+srand(time(NULL));
 
 monde_t monde;
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <SDL2/SDL_ttf.h>
+#include <time.h>
 
 #include <math.h>
 
@@ -26,7 +27,7 @@
 
 #define LimiteYJump 300 //Limite de la hauteur du saut, une fois atteinte, le joueur commence à redescendre
 
-#define PosPremierObstacleNiveau 1200 //Coordonnée x du premier obstacle des niveaux
+#define PosPremierObstacleNiveau 1220 //Coordonnée x du premier obstacle des niveaux
 
 struct joueur{
     SDL_Rect SpriteGraphique[1]; //Position du joueur sur la carte
@@ -63,6 +64,7 @@ struct niveau{
     obstacle_t* tabObstacle; //tableau contenant tout les obstacles du niveau
     int compteurFin; //compteur avant que le niveau ne se termine une fois que le joueur a passé le dernier obstacle
     SDL_Texture* victoire; //écriture "victoire" à la fin du niveau
+    int score; //score du joueur, pour le Mode arcade
 };
 
 typedef struct niveau niveau_t;
@@ -130,3 +132,5 @@ void initMonde(monde_t* monde);
 void chargerSauvegarde(monde_t* monde);
 
 void EcrireSauvegarde(int* niveauAccompli);
+
+char* trouverStringObstacle(int numero);

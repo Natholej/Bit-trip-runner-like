@@ -42,7 +42,7 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
  * @param nbObstacle le nombre d'obstacle (qu'on récupèrera pour la boucle principale du jeu)
  * @return le tableau contenat les obstacles 
  */
-obstacle_t* chargerniveau(int* niveau, SDL_Renderer* ecran, int* nbObstacle){
+obstacle_t* chargerniveau(int* niveau, SDL_Renderer* ecran, int* nbObstacle, int* score){
     obstacle_t* tabObstacle;
     if (niveau[0]==1){
         nbObstacle[0] = 5; //On le définit pour le récupérer en dehors de la fonction
@@ -110,6 +110,27 @@ obstacle_t* chargerniveau(int* niveau, SDL_Renderer* ecran, int* nbObstacle){
                         tabObstacle[i].TextureObstacle = charger_image("../Ressources/Tronc.bmp", ecran);
                     }
                     posX += 300; //distance entre l'obstacle et le suivant
+                }
+            } else{
+                if (niveau[0]==4){
+                    score[0] = 0;
+                    nbObstacle[0] = 4; //On le définit pour le récupérer en dehors de la fonction
+                    tabObstacle = malloc(sizeof(obstacle_t)*nbObstacle[0]);
+                    char* tabString[nbObstacle[0]];
+
+                    int posX = PosPremierObstacleNiveau; //position du premier obstacle définit arbitrairement
+
+                    for (int i=0; i<nbObstacle[0]; i++){
+                        tabString[i] = trouverStringObstacle(rand()%4);
+
+                        tabObstacle[i] = TrouverObstacle(tabString[i], posX); //on trouve l'obstacle correspondant et le positionne à x = posX;
+                        if (strcmp(tabString[i],"troncCassable")==0){ //Si c'est le troncCassable, on charge l'image qui correspond, différente des autres (rouge)
+                            tabObstacle[i].TextureObstacle = charger_image("../Ressources/TroncCassable.bmp", ecran);
+                        } else{
+                            tabObstacle[i].TextureObstacle = charger_image("../Ressources/Tronc.bmp", ecran);
+                        }
+                        posX += 300; //distance entre l'obstacle et le suivant
+                    }
                 }
             }
         }

@@ -343,7 +343,7 @@ void handle_pause(joueur_t* joueur, menu_t* menu, SDL_Renderer* ecran){
  * @param niveauAccompli nombre de niveau accompli
  */
 void victoire(niveau_t* niveau, bool* pause, SDL_Renderer* ecran, int* niveauAccompli){
-    if (niveau->tabObstacle[niveau->nbObstacle-1].SpriteGraphique[0].x<=0){ //Si le dernier obstacle est à x=0 alors il est passé derrière le joueur, le joueur a donc réussit
+    if (niveau->tabObstacle[niveau->nbObstacle-1].SpriteGraphique[0].x<=0 && niveau->numero<=3){ //Si le dernier obstacle est à x=0 alors il est passé derrière le joueur, le joueur a donc réussi, seulement sur les niveaux 1,2 et 3
         SDL_RenderCopy(ecran, niveau->victoire, NULL, NULL);
         if (niveau->compteurFin <= CompteurFinNiveau){
             niveau->compteurFin += 1;
@@ -411,4 +411,21 @@ void EcrireSauvegarde(int* niveauAccompli){
     sprintf(str, "%d", niveauAccompli[0]);
     fputs(str,fichier);
     fclose(fichier);
+}
+
+
+char* trouverStringObstacle(int numero){
+    if (numero==0){
+        return "tronc1";
+    } else{
+        if (numero==1){
+            return "tronc2";
+        } else{
+            if (numero==2){
+                return "troncRoulade";
+            } else{
+                return "troncCassable";
+            }
+        }
+    }
 }
