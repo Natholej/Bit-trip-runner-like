@@ -196,14 +196,14 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                 pause[0] = false;
             } else{
                 //Case 2 (= niveau 2)
-                if (souris->posX >= 700 && souris->posY>=150 && souris->posY<=300){
+                if (souris->posX >= 700 && souris->posY>=150 && souris->posY<=300 && niveauAccompli[0]>=1){
                     joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                     choix[0] = 2;
                     handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
                     pause[0] = false;
                 } else{
                     //Case 3 (= niveau 3)
-                    if (souris->posX >= 700 && souris->posY>=300 && souris->posY<=450){
+                    if (souris->posX >= 700 && souris->posY>=300 && souris->posY<=450 && niveauAccompli[0]>=2){
                         joueur->SpriteFichier[0].y = 0; //On met la texture de course du sprite
                         choix[0] = 3;
                         handle_choix(choix, niveau, ecran, terminer, pause, niveauAccompli);
