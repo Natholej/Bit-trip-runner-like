@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL_ttf.h>
 #include <time.h>
+#include <string.h>
 
 #include <math.h>
 
@@ -98,6 +99,7 @@ struct monde{
     bool fin; //fin du jeu ?
     bool pause; //jeux en pause ?
     int niveauAccompli; //nombre de niveau accompli (de 0 à 3)
+    int ScoreActuelle; //Score pour limiter le rafraichissement de la police
 };
 
 typedef struct monde monde_t;

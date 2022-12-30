@@ -115,6 +115,7 @@ void JumpJoueur(bool* jump, joueur_t* joueur, int* compteurJump, int* sens){
  * @param niveauAccompli nombre de niveau accompli
  */
 void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool* pause, int* choix, niveau_t* niveau, SDL_Renderer* ecran, bool* roulade, souris_t* souris, int* niveauAccompli){
+    bool echapPause = false;
     switch(evenements->type){
         case SDL_QUIT:
             terminer[0] = true; break;
@@ -153,6 +154,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                     break;
                     case SDLK_s:
                         EcrireSauvegarde(niveauAccompli);
+                    break;
                 }
             } 
             //NON EN PAUSE
@@ -160,6 +162,7 @@ void handle_events(SDL_Event* evenements, bool* terminer, joueur_t* joueur, bool
                 switch(evenements->key.keysym.sym){
                     case SDLK_ESCAPE:
                         terminer[0] = true; break;
+                        break;
                     case SDLK_s: //Roulade, on met le sprite correspondant
                         joueur->SpriteFichier[0].y = (400/6)*2; 
                         roulade[0] = true;
@@ -371,6 +374,7 @@ void initMonde(monde_t* monde){
     monde->niveau.compteurFin = 0;
     monde->joueur.CoupDePied = false;
     monde->niveauAccompli = 0;
+    monde->ScoreActuelle = -1;
     // Créer la fenêtre
     monde->fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_RESIZABLE);
 
@@ -413,7 +417,12 @@ void EcrireSauvegarde(int* niveauAccompli){
     fclose(fichier);
 }
 
-
+/**
+ * @brief Retourne un string (correspondant à un obstacle) selon un numéro attribué
+ * 
+ * @param numero le numéro
+ * @return char* le string correspondant à un obstacle
+ */
 char* trouverStringObstacle(int numero){
     if (numero==0){
         return "tronc1";

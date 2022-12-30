@@ -24,6 +24,8 @@ void update_data(monde_t* monde){
             if (monde->joueur.CoupDePied == true && monde->niveau.tabObstacle[j].peutEtrecasse == true){
             monde->niveau.tabObstacle[j].estDetruit = true;
             } else{
+                monde->niveau.score = 0;
+                monde->ScoreActuelle = -1;
                 monde->niveau.tabObstacle = chargerniveau(&monde->niveau.numero, monde->ecran, &monde->niveau.nbObstacle, &monde->niveau.score);
             }
         }
@@ -44,7 +46,6 @@ void update_data(monde_t* monde){
                 }
 
                 monde->niveau.score +=1 ;
-                printf("%d\n", monde->niveau.score);
             }
         }
     }
@@ -98,10 +99,45 @@ initMonde(&monde);
 initTexture(&monde);
 
 
+// Initialise SDL_ttf, elle retourne -1 s’il y a une erreur
+int TTF_Init( ) ;
+TTF_Init();
+TTF_Font *font = TTF_OpenFont("../Ressources/Minecraft.ttf",28);
+SDL_Color color = {255,255,255};
+SDL_Rect text_pos; // Position du texte
+text_pos.x = 10;
+text_pos.y = 0;
+text_pos.w = 250; // Largeur du texte en pixels (à récupérer)
+text_pos.h = 100; // Hauteur du texte en pixels (à récupérer)
+
+SDL_Texture* texte; //= SDL_CreateTextureFromSurface(monde.ecran, surface);
+char score[20];
+sprintf(score, "Score : %d", monde.niveau.score);
+SDL_Surface* surface = TTF_RenderText_Solid(font, score, color);
+texte = SDL_CreateTextureFromSurface(monde.ecran, surface);
+
+
+
+
 // Boucle principale
 while(!monde.fin){
     SDL_RenderClear(monde.ecran); //Clear la cible actuelle
     SDL_RenderCopy(monde.ecran, monde.fond, NULL, NULL); //Copie la texture et la met sur le renderer
+
+
+    if (monde.niveau.numero==4){
+        if (monde.ScoreActuelle < monde.niveau.score){ //Dédoublement du score pour limiter le rafraichissement du score et ne pas provoquer un problème de mémoire
+        monde.ScoreActuelle = monde.niveau.score;
+
+        char score[10];
+        sprintf(score, "Score : %d", monde.niveau.score);
+        SDL_Surface* surface = TTF_RenderText_Solid(font, score, color);
+        texte = SDL_CreateTextureFromSurface(monde.ecran, surface);
+        }
+        SDL_RenderCopy(monde.ecran,texte,NULL, &text_pos); 
+    }
+
+
 
 
     if (!monde.pause){
@@ -125,6 +161,12 @@ while(!monde.fin){
     //Update
     SDL_RenderPresent(monde.ecran);
 }
+
+// Fermer la police et quitter SDL_ttf
+TTF_CloseFont( font );
+TTF_Quit(); 
+
+
 // Quitter SDL
 SDL_Quit();
 SDL_DestroyTexture(monde.fond);
