@@ -124,7 +124,7 @@ while(!monde.fin){
     SDL_RenderClear(monde.ecran); //Clear la cible actuelle
     SDL_RenderCopy(monde.ecran, monde.fond, NULL, NULL); //Copie la texture et la met sur le renderer
 
-
+    
     if (monde.niveau.numero==4){
         if (monde.ScoreActuelle < monde.niveau.score){ //Dédoublement du score pour limiter le rafraichissement du score et ne pas provoquer un problème de mémoire
         monde.ScoreActuelle = monde.niveau.score;
@@ -170,6 +170,10 @@ TTF_Quit();
 // Quitter SDL
 SDL_Quit();
 SDL_DestroyTexture(monde.fond);
+SDL_DestroyTexture(monde.joueur.JoueurSprite);
+SDL_DestroyTexture(monde.niveau.victoire);
+SDL_DestroyTexture(monde.menu.texturemenu);
+SDL_DestroyTexture(monde.menu.curseur);
 SDL_DestroyWindow(monde.fenetre);
 return 0;
 }
