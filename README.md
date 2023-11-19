@@ -1,2 +1,1 @@
-# projet-s3-prog-avancee
-Projet S3 programmation avancée
+# Projet L2 S1 de Programmation Avancée
